@@ -2,7 +2,7 @@
 
 EVahan is a front-end web application that helps users **find EV charging stations**, **plan long-distance EV routes with automatic charging stops**, **monitor traffic on the way**, and **estimate charging costs**.
 
-Live portfolio: https://prismatic-alpaca-376b6f.netlify.app
+Live portfolio: https://evahancharge.wasmer.app
 
 ## Links
 - **Portfolio:** https://prismatic-alpaca-376b6f.netlify.app
