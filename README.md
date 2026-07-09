@@ -109,3 +109,7 @@ Styling:
 
 This project is a front-end demo/application. Availability, routing, and traffic depend on external APIs and live data responses.
 
+## OUTPUTS
+
+<img width="1920" height="1080" alt="Screenshot (542)" src="https://github.com/user-attachments/assets/b5d14603-d6af-404d-b0f9-8555467d183c" />
+
