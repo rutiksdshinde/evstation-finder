@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <title>Traffic Monitor - EVahan</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <!-- Bootstrap 5 CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  
+  <!-- Fonts & Icons -->
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <!-- TomTom Maps CSS -->
+  <link rel="stylesheet" href="https://api.tomtom.com/maps-sdk-for-web/cdn/5.x/5.57.0/maps/maps.css" />
+  <link rel="stylesheet" href="https://api.tomtom.com/maps-sdk-for-web/cdn/plugins/SearchBox/2.23.1/SearchBox.css" />
+  <link rel="stylesheet" href="https://api.tomtom.com/maps-sdk-for-web/cdn/5.x/5.57.0/maps/css-styles/traffic-incidents.css" />
+  
+  <!-- Chatbot CSS -->
+  <link rel="stylesheet" href="chatbot.css">
+
+  <style>
+    /* --- VARIABLES --- */
+    :root {
+      --primary: #2563eb;
+      --primary-grad: linear-gradient(135deg, #2563eb, #3b82f6);
+      --accent-grad: linear-gradient(135deg, #f59e0b, #d97706);
+      --glass-bg: rgba(255, 255, 255, 0.85);
+      --glass-border: rgba(255, 255, 255, 0.5);
+      --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+      --text-main: #1e293b;
+      --text-muted: #64748b;
+      --surface: #ffffff;
+      --border: #e2e8f0;
+      --radius: 24px;
+    }
+
+    [data-theme="dark"] {
+      --glass-bg: rgba(15, 23, 42, 0.85);
+      --glass-border: rgba(255, 255, 255, 0.1);
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --surface: #1e293b;
+      --border: #334155;
+    }
+
+    /* --- BASE --- */
+    body {
+      margin: 0; font-family: 'Plus Jakarta Sans', sans-serif;
+      background: var(--surface); color: var(--text-main);
+      overflow: hidden;
+    }
+
+    /* --- NAVBAR (Glass) --- */
+    .navbar {
+      position: absolute; top: 0; left: 0; right: 0; z-index: 1000;
+      background: var(--glass-bg); backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--glass-border);
+      padding: 1rem 2rem;
+    }
+
+    .logo { 
+      font-weight: 800; font-size: 1.4rem; 
+      background: var(--primary-grad); -webkit-background-clip: text; 
+      -webkit-text-fill-color: transparent; text-decoration: none;
+      display: flex; align-items: center; gap: 10px;
+    }
+    
+    .nav-links { display: flex; gap: 1.5rem; align-items: center; }
+    .nav-link { 
+      color: var(--text-main); text-decoration: none; font-weight: 600; 
+      font-size: 0.95rem; transition: color 0.2s; 
+    }
+    .nav-link:hover { color: var(--primary); }
+    .nav-toggle { display: none; background: none; border: none; color: var(--text-main); font-size: 1.5rem; }
+
+    /* --- MAIN LAYOUT --- */
+    .app-container { height: 100vh; width: 100vw; position: relative; }
+    
+    /* --- FLOATING SIDEBAR (Glass) --- */
+    .sidebar {
+      position: absolute; top: 85px; left: 25px; width: 380px;
+      max-height: calc(100vh - 110px);
+      background: var(--glass-bg);
+      backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+      border: 1px solid var(--glass-border);
+      border-radius: var(--radius);
+      box-shadow: var(--glass-shadow);
+      z-index: 500;
+      display: flex; flex-direction: column;
+      overflow: hidden;
+      transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .sidebar-scroll { padding: 1.8rem; overflow-y: auto; flex: 1; }
+    
+    /* Custom Scrollbar */
+    .sidebar-scroll::-webkit-scrollbar { width: 6px; }
+    .sidebar-scroll::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+    [data-theme="dark"] .sidebar-scroll::-webkit-scrollbar-thumb { background: #475569; }
+
+    /* Header */
+    .traffic-header h2 { font-size: 1.5rem; font-weight: 800; margin-bottom: 0.5rem; letter-spacing: -0.5px; }
+    .traffic-header p { font-size: 0.9rem; color: var(--text-muted); line-height: 1.6; margin-bottom: 2rem; }
+
+    /* Controls */
+    .control-group { margin-bottom: 2rem; }
+    .control-label { 
+      text-transform: uppercase; font-size: 0.75rem; letter-spacing: 1px; 
+      color: var(--text-muted); font-weight: 700; margin-bottom: 1rem; display: block; 
+    }
+
+    /* Modern Toggles */
+    .toggle-card {
+      background: rgba(255,255,255,0.5); border: 1px solid var(--border);
+      padding: 1rem; border-radius: 16px; margin-bottom: 1rem;
+      display: flex; justify-content: space-between; align-items: center;
+      transition: all 0.2s;
+    }
+    [data-theme="dark"] .toggle-card { background: rgba(0,0,0,0.2); }
+    .toggle-card:hover { transform: translateY(-2px); border-color: var(--primary); }
+
+    .toggle-info { display: flex; align-items: center; gap: 12px; font-weight: 600; font-size: 0.95rem; }
+    .icon-box { 
+      width: 36px; height: 36px; border-radius: 10px; 
+      display: flex; align-items: center; justify-content: center; 
+    }
+    .bg-red-light { background: rgba(239, 68, 68, 0.1); color: #ef4444; }
+    .bg-blue-light { background: rgba(37, 99, 235, 0.1); color: #2563eb; }
+
+    /* IOS Switch */
+    .form-check-input {
+      width: 3.2em; height: 1.8em; border-radius: 2em; border: none;
+      background-color: #cbd5e1; cursor: pointer; transition: 0.3s;
+      background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='-4 -4 8 8'%3e%3ccircle r='3' fill='%23fff'/%3e%3c/svg%3e");
+    }
+    .form-check-input:checked { background-color: var(--primary); }
+
+    /* Buttons */
+    .btn-draw {
+      width: 100%; padding: 1rem; border: none; border-radius: 16px;
+      background: var(--primary-grad); color: white; font-weight: 700;
+      font-size: 0.95rem; box-shadow: 0 8px 20px rgba(37, 99, 235, 0.3);
+      cursor: pointer; transition: all 0.3s; display: flex; 
+      align-items: center; justify-content: center; gap: 10px;
+    }
+    .btn-draw:hover { transform: translateY(-3px); box-shadow: 0 12px 25px rgba(37, 99, 235, 0.4); }
+
+    /* Incident List Cards */
+    #incident-list { 
+      display: flex; flex-direction: column; gap: 10px; 
+      max-height: 250px; overflow-y: auto;
+    }
+    .incident-card {
+      background: var(--surface); padding: 12px; border-radius: 12px;
+      border: 1px solid var(--border); border-left: 4px solid #cbd5e1;
+      font-size: 0.85rem; transition: transform 0.2s;
+    }
+    .incident-card:hover { transform: translateX(5px); }
+    .incident-heavy { border-left-color: #ef4444; }
+    .incident-moderate { border-left-color: #f59e0b; }
+
+    /* Legend */
+    .legend-container { 
+      background: var(--surface); padding: 15px 20px; 
+      border-top: 1px solid var(--border);
+    }
+    .legend-bar {
+      height: 6px; width: 100%; border-radius: 10px;
+      background: linear-gradient(to right, #22c55e, #f59e0b, #ef4444, #7f1d1d);
+      margin-bottom: 8px;
+    }
+    .legend-text { display: flex; justify-content: space-between; font-size: 0.75rem; color: var(--text-muted); font-weight: 600; text-transform: uppercase; }
+
+    /* Map */
+    #map { width: 100%; height: 100%; z-index: 1; }
+
+    /* Chatbot Position */
+    #chat-toggle-btn { bottom: 40px; right: 40px; z-index: 900; }
+
+    /* Responsive Design */
+    @media (max-width: 1200px) {
+      .sidebar { width: 340px; left: 20px; }
+      .navbar { padding: 0.8rem 1.5rem; }
+      .nav-links { gap: 1.2rem; }
+      .logo { font-size: 1.3rem; }
+    }
+
+    @media (max-width: 992px) {
+      .sidebar { width: 320px; top: 80px; max-height: calc(100vh - 100px); }
+      .sidebar-scroll { padding: 1.5rem; }
+      .traffic-header h2 { font-size: 1.4rem; }
+      .traffic-header p { font-size: 0.85rem; margin-bottom: 1.5rem; }
+      .control-group { margin-bottom: 1.5rem; }
+      .toggle-card { padding: 0.8rem; margin-bottom: 0.8rem; }
+      .toggle-info { gap: 10px; font-size: 0.9rem; }
+      .icon-box { width: 32px; height: 32px; }
+      .btn-draw { padding: 0.9rem; font-size: 0.9rem; }
+      .incident-card { padding: 10px; font-size: 0.8rem; }
+      .legend-container { padding: 12px 16px; }
+      .legend-text { font-size: 0.7rem; }
+    }
+
+    @media (max-width: 850px) {
+      .sidebar { width: 300px; }
+      .navbar { padding: 0.7rem 1.2rem; }
+      .nav-links { gap: 1rem; }
+      .nav-link { font-size: 0.9rem; }
+      .logo { font-size: 1.2rem; }
+      .traffic-header h2 { font-size: 1.3rem; }
+      .sidebar-scroll { padding: 1.2rem; }
+    }
+
+    @media (max-width: 768px) {
+      .nav-links {
+        display: none; /* Hide standard links */
+        position: absolute;
+        top: 64px; left: 0; width: 100%;
+        background: var(--glass-bg);
+        backdrop-filter: blur(12px);
+        flex-direction: column;
+        padding: 20px;
+        border-bottom: 1px solid var(--glass-border);
+        gap: 16px;
+        transform: translateY(-150%);
+        transition: transform 0.3s;
+      }
+      .nav-links.active { transform: translateY(0); }
+      .nav-toggle { display: block; }
+      .sidebar { width: 100%; left: 0; bottom: 0; top: auto; max-height: 85vh; border-radius: 24px 24px 0 0; transform: translateY(calc(100% - 140px)); }
+      .sidebar.expanded { transform: translateY(0); }
+      .mobile-handle { display: block; width: 40px; height: 4px; background: var(--text-secondary); border-radius: 2px; margin: 10px auto; opacity: 0.5; }
+      .sidebar-scroll { padding: 16px; }
+      .traffic-header h2 { font-size: 1.2rem; margin-bottom: 0.3rem; }
+      .traffic-header p { font-size: 0.8rem; margin-bottom: 1.2rem; }
+      .control-group { margin-bottom: 1.2rem; }
+      .toggle-card { padding: 0.7rem; margin-bottom: 0.6rem; }
+      .toggle-info { gap: 8px; font-size: 0.85rem; }
+      .icon-box { width: 28px; height: 28px; }
+      .btn-draw { padding: 0.8rem; font-size: 0.85rem; }
+      .incident-card { padding: 8px; font-size: 0.75rem; }
+      .legend-container { padding: 10px 14px; }
+      .legend-text { font-size: 0.65rem; }
+      #chat-toggle-btn { bottom: calc(85vh + 40px); right: 20px; }
+    }
+
+    @media (max-width: 576px) {
+      .navbar { height: 56px; padding: 0.6rem 1rem; }
+      .nav-brand { font-size: 1.1rem; gap: 6px; }
+      .nav-links { padding: 16px; gap: 12px; }
+      .nav-link { font-size: 0.85rem; }
+      .nav-toggle { font-size: 1.3rem; }
+
+      .sidebar { max-height: 80vh; transform: translateY(calc(100% - 120px)); }
+      .sidebar.expanded { transform: translateY(0); }
+      .mobile-handle { width: 35px; height: 3px; margin: 8px auto; }
+      .sidebar-scroll { padding: 12px; }
+      .traffic-header h2 { font-size: 1.1rem; margin-bottom: 0.2rem; }
+      .traffic-header p { font-size: 0.75rem; margin-bottom: 1rem; }
+      .control-group { margin-bottom: 1rem; }
+      .toggle-card { padding: 0.6rem; margin-bottom: 0.5rem; }
+      .toggle-info { gap: 6px; font-size: 0.8rem; }
+      .icon-box { width: 24px; height: 24px; }
+      .btn-draw { padding: 0.7rem; font-size: 0.8rem; }
+      .incident-card { padding: 6px; font-size: 0.7rem; }
+      .legend-container { padding: 8px 12px; }
+      .legend-text { font-size: 0.6rem; }
+      #chat-toggle-btn { bottom: calc(80vh + 35px); right: 15px; width: 50px; height: 50px; font-size: 1.2rem; }
+    }
+
+    @media (max-width: 480px) {
+      .navbar { height: 52px; padding: 0.5rem 0.8rem; }
+      .nav-brand { font-size: 1rem; gap: 4px; }
+      .nav-links { padding: 12px; gap: 10px; }
+      .nav-link { font-size: 0.8rem; }
+      .nav-toggle { font-size: 1.2rem; }
+
+      .sidebar { max-height: 75vh; transform: translateY(calc(100% - 100px)); }
+      .sidebar.expanded { transform: translateY(0); }
+      .mobile-handle { width: 30px; height: 2px; margin: 6px auto; }
+      .sidebar-scroll { padding: 10px; }
+      .traffic-header h2 { font-size: 1rem; margin-bottom: 0.1rem; }
+      .traffic-header p { font-size: 0.7rem; margin-bottom: 0.8rem; }
+      .control-group { margin-bottom: 0.8rem; }
+      .toggle-card { padding: 0.5rem; margin-bottom: 0.4rem; }
+      .toggle-info { gap: 4px; font-size: 0.75rem; }
+      .icon-box { width: 20px; height: 20px; }
+      .btn-draw { padding: 0.6rem; font-size: 0.75rem; }
+      .incident-card { padding: 4px; font-size: 0.65rem; }
+      .legend-container { padding: 6px 10px; }
+      .legend-text { font-size: 0.55rem; }
+      #chat-toggle-btn { bottom: calc(75vh + 30px); right: 10px; width: 45px; height: 45px; font-size: 1.1rem; }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- Navbar -->
+  <nav class="navbar">
+    <div class="nav-content" style="width:100%; display:flex; justify-content:space-between; align-items:center">
+      <a href="index.html" class="logo">
+        <i class="fas fa-bolt"></i> EVahan
+      </a>
+      
+      <button class="nav-toggle" onclick="document.querySelector('.nav-links').classList.toggle('active')">
+        <i class="fas fa-bars"></i>
+      </button>
+
+      <div class="nav-links">
+        <a href="index.html" class="nav-link">Home</a>
+        <a href="ev_search.html" class="nav-link">Stations</a>
+        <a href="app_benefits.html" class="nav-link">Route Planner</a>
+        <a href="ev_calculator.html" class="nav-link">calculate Cost</a>
+        <button id="theme-toggle" style="background:none; border:none; color:var(--text-main); font-size:1.1rem; cursor:pointer">
+          <i class="fas fa-moon"></i>
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <div class="app-container">
+    <!-- Map Background -->
+    <div id="map"></div>
+    
+    <!-- Popup Wrapper for messages -->
+    <div id="popup-wrapper" style="position:absolute; top:80px; left:50%; transform:translateX(-50%); z-index:1000;"></div>
+
+    <!-- Floating Glass Sidebar -->
+    <div class="sidebar">
+      <div class="sidebar-scroll">
+        <div class="traffic-header">
+          <h2>Traffic Monitor</h2>
+          <p>Live congestion data & incident reports.</p>
+        </div>
+
+        <!-- Search -->
+        <div class="control-group">
+          <span class="control-label">Location Analysis</span>
+          <div id="search-panel"></div>
+        </div>
+
+        <!-- Toggles -->
+        <div class="control-group">
+          <span class="control-label">Layers</span>
+          
+          <div class="toggle-card">
+            <div class="toggle-info">
+              <div class="icon-box bg-red-light"><i class="fas fa-car-crash"></i></div>
+              <span>Incidents</span>
+            </div>
+            <div class="form-check form-switch">
+              <input class="form-check-input" type="checkbox" id="incidents-toggle">
+            </div>
+          </div>
+
+          <div class="toggle-card">
+            <div class="toggle-info">
+              <div class="icon-box bg-blue-light"><i class="fas fa-road"></i></div>
+              <span>Traffic Flow</span>
+            </div>
+            <div class="form-check form-switch">
+              <input class="form-check-input" type="checkbox" id="flow-toggle" checked>
+            </div>
+          </div>
+        </div>
+
+        <!-- Draw Area -->
+        <button id="bounding-box-button" class="btn-draw">
+          <i class="fas fa-vector-square"></i> Draw Watch Zone
+        </button>
+
+        <!-- Incident List -->
+        <div class="control-group" style="margin-top:2rem">
+          <span class="control-label">Live Feed</span>
+          <div id="incident-list">
+            <div class="incident-card" style="text-align:center; color:var(--text-muted)">
+              <i class="fas fa-search-location fa-2x" style="opacity:0.3; margin-bottom:10px"></i><br>
+              Scan area to see alerts
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Legend Footer -->
+      <div class="legend-container">
+        <div class="legend-bar"></div>
+        <div class="legend-text">
+          <span>Fast Flow</span>
+          <span>Congested</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Chatbot -->
+  <button id="chat-toggle-btn" onclick="toggleChat()">
+    <i class="fas fa-comment-dots"></i>
+  </button>
+
+  <div id="chat-window" class="chat-hidden">
+    <div class="chat-header">
+      <span><i class="fas fa-robot"></i> Traffic Assistant</span>
+      <button onclick="toggleChat()" class="close-chat">×</button>
+    </div>
+    <div id="chat-messages">
+      <div class="message bot-message">I can help you find alternate routes around heavy traffic. Just ask!</div>
+    </div>
+    <div class="chat-input-area">
+      <input type="text" id="user-input" placeholder="Type your query..." onkeypress="handleEnter(event)">
+      <button onclick="sendMessage()"><i class="fas fa-paper-plane"></i></button>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  
+  <!-- TomTom SDK -->
+  <script src="https://api.tomtom.com/maps-sdk-for-web/cdn/5.x/5.57.0/maps/maps-web.min.js"></script>
+  <script src="https://api.tomtom.com/maps-sdk-for-web/cdn/5.x/5.57.0/services/services-web.min.js"></script>
+  <script src="https://api.tomtom.com/maps-sdk-for-web/cdn/plugins/SearchBox/2.23.1/SearchBox-web.js"></script>
+
+  <!-- Logic -->
+  <script src="traffic.js"></script>
+    <script src="config.js"></script>
+    <script src="chatbot.js"></script>
+  
+  <script>
+    // Theme Logic
+    const themeBtn = document.getElementById('theme-toggle');
+    const html = document.documentElement;
+    let theme = localStorage.getItem('theme') || 'light';
+    html.setAttribute('data-theme', theme);
+    updateIcon(theme);
+
+    themeBtn.addEventListener('click', () => {
+      theme = theme === 'light' ? 'dark' : 'light';
+      html.setAttribute('data-theme', theme);
+      localStorage.setItem('theme', theme);
+      updateIcon(theme);
+    });
+
+    function updateIcon(t) {
+      themeBtn.innerHTML = t === 'light' ? '<i class="fas fa-moon"></i>' : '<i class="fas fa-sun"></i>';
+    }
+  </script>
+
+</body>
+</html>

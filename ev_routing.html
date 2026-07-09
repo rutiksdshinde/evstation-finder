@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>EV Route Planner Pro</title>
+
+    <!-- TomTom Maps -->
+    <link rel="stylesheet" href="https://api.tomtom.com/maps-sdk-for-web/cdn/5.x/5.36.1/maps/maps.css" />
+    
+    <!-- Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+
+    <!-- Chatbot CSS -->
+    <link rel="stylesheet" href="chatbot.css">
+
+    <script src="https://api.tomtom.com/maps-sdk-for-web/cdn/5.x/5.36.1/maps/maps-web.min.js"></script>
+    <script src="https://api.tomtom.com/maps-sdk-for-web/cdn/5.x/5.36.1/services/services-web.min.js"></script>
+    <script src="chargingAvailability.js"></script>
+    <script src="calculateLongDistanceEVRoute.js"></script>
+    <script src="ev_model.js"></script>
+
+    <style>
+        :root {
+            /* Light Theme */
+            --bg-color: #f8fafc;
+            --surface-color: rgba(255, 255, 255, 0.9);
+            --surface-border: rgba(255, 255, 255, 0.6);
+            --nav-bg: rgba(255, 255, 255, 0.85);
+            --text-primary: #1e293b;
+            --text-secondary: #64748b;
+            --primary-color: #3b82f6;
+            --primary-hover: #2563eb;
+            --accent-color: #10b981;
+            --gps-color: #4285F4;
+            --shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+            --radius: 16px;
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            --input-bg: #f1f5f9;
+        }
+
+        [data-theme="dark"] {
+            /* Dark Theme */
+            --bg-color: #0f172a;
+            --surface-color: rgba(30, 41, 59, 0.9);
+            --surface-border: rgba(255, 255, 255, 0.1);
+            --nav-bg: rgba(15, 23, 42, 0.85);
+            --text-primary: #f1f5f9;
+            --text-secondary: #94a3b8;
+            --primary-color: #60a5fa;
+            --primary-hover: #3b82f6;
+            --accent-color: #34d399;
+            --shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+            --input-bg: #334155;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-primary);
+            overflow: hidden;
+            height: 100vh;
+            width: 100vw;
+            transition: background-color 0.4s ease;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* --- NAVBAR STYLES --- */
+        .navbar {
+            height: 64px;
+            width: 100%;
+            background: var(--nav-bg);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--surface-border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 24px;
+            z-index: 50;
+            position: relative;
+            box-shadow: 0 1px 10px rgba(0,0,0,0.05);
+        }
+
+        .nav-brand {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--primary-color);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 32px;
+            align-items: center;
+        }
+
+        .nav-link {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.95rem;
+            transition: var(--transition);
+            position: relative;
+        }
+
+        .nav-link:hover, .nav-link.active {
+            color: var(--primary-color);
+        }
+
+        .nav-link.active::after {
+            content: '';
+            position: absolute;
+            bottom: -22px;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: var(--primary-color);
+            border-radius: 2px 2px 0 0;
+        }
+
+        .nav-actions {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        /* Profile & Theme Icons */
+        .icon-btn {
+            background: var(--input-bg);
+            border: none;
+            width: 40px; height: 40px;
+            border-radius: 12px;
+            cursor: pointer;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            transition: var(--transition);
+        }
+        .icon-btn:hover { background: var(--surface-border); color: var(--primary-color); }
+
+        .profile-avatar {
+            width: 36px; height: 36px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            font-size: 0.9rem;
+            cursor: pointer;
+        }
+
+        /* Mobile Menu Toggle */
+        .menu-toggle { display: none; font-size: 24px; color: var(--text-primary); cursor: pointer; }
+
+        /* --- MAP & SIDEBAR CONTAINER --- */
+        .app-container {
+            position: relative;
+            flex: 1; /* Takes remaining height */
+            width: 100%;
+            overflow: hidden;
+        }
+
+        #map { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; }
+
+        /* Sidebar adjusted for navbar */
+        .sidebar {
+            position: absolute;
+            top: 20px; left: 20px;
+            width: 380px;
+            max-height: calc(100% - 40px); /* Fit within container */
+            z-index: 10;
+            background: var(--surface-color);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid var(--surface-border);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+            transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .sidebar-content { padding: 24px; }
+        
+        /* Removed Brand Header from Sidebar since it's in Navbar now */
+        /* .header-row in sidebar is simplified */
+        .sidebar-title { font-size: 1.1rem; font-weight: 700; margin-bottom: 20px; display: flex; align-items: center; gap: 8px; }
+
+        /* --- INPUTS & BUTTONS (Same as before) --- */
+        .input-group { margin-bottom: 16px; }
+        .input-label { font-size: 0.75rem; font-weight: 600; text-transform: uppercase; color: var(--text-secondary); margin-bottom: 6px; display: block; letter-spacing: 0.5px; }
+        .input-wrapper { position: relative; display: flex; align-items: center; }
+        .input-wrapper i.icon-left { position: absolute; left: 14px; color: var(--primary-color); pointer-events: none; }
+        .styled-input { width: 100%; padding: 14px 45px 14px 45px; border-radius: 12px; border: 2px solid transparent; background: var(--input-bg); color: var(--text-primary); font-family: inherit; font-size: 0.95rem; transition: var(--transition); }
+        .styled-input:focus { outline: none; border-color: var(--primary-color); background: var(--bg-color); }
+        .styled-input.success { border-color: var(--accent-color); }
+        .gps-btn { position: absolute; right: 8px; top: 50%; transform: translateY(-50%); width: 32px; height: 32px; border-radius: 8px; border: none; background: transparent; color: var(--text-secondary); cursor: pointer; transition: var(--transition); display: flex; align-items: center; justify-content: center; font-size: 18px; }
+        .gps-btn:hover { background: rgba(59, 130, 246, 0.1); color: var(--primary-color); }
+        .gps-btn.loading i { animation: spin 1s infinite linear; color: var(--primary-color); }
+        .gps-btn.active { background: var(--gps-color); color: white; box-shadow: 0 2px 8px rgba(66, 133, 244, 0.3); }
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+        .primary-btn { width: 100%; padding: 14px; border: none; border-radius: 12px; background: linear-gradient(135deg, var(--primary-color), var(--primary-hover)); color: white; font-weight: 600; font-size: 1rem; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3); transition: var(--transition); margin-top: 10px; }
+        .primary-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 16px rgba(59, 130, 246, 0.4); }
+
+        .suggestions {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: var(--surface-color);
+            border: 1px solid var(--surface-border);
+            z-index: 9999;
+            max-height: 220px;
+            overflow-y: auto;
+            border-radius: 8px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+            display: none;
+        }
+
+        .suggestion-item {
+            padding: 10px 14px;
+            cursor: pointer;
+            font-size: 14px;
+            color: var(--text-primary);
+            transition: background 0.2s;
+        }
+
+        .suggestion-item:hover {
+            background: var(--input-bg);
+        }
+
+        /* --- MARKERS & CHAT (Same as before) --- */
+        .pulsing-marker { width: 16px; height: 16px; background-color: var(--gps-color); border: 2px solid white; border-radius: 50%; box-shadow: 0 0 4px rgba(0,0,0,0.3); cursor: pointer; position: relative; }
+        .pulsing-marker::after { content: ''; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 100%; height: 100%; border-radius: 50%; background-color: rgba(66, 133, 244, 0.5); animation: pulse-ring 2s infinite; z-index: -1; }
+        @keyframes pulse-ring { 0% { width: 100%; height: 100%; opacity: 0.8; } 100% { width: 400%; height: 400%; opacity: 0; } }
+        #summary { margin-top: 24px; padding-top: 20px; border-top: 1px solid var(--surface-border); animation: fadeIn 0.5s ease; }
+        .chatbot-fab { position: fixed; bottom: 30px; right: 30px; width: 60px; height: 60px; border-radius: 50%; background: var(--accent-color); color: white; border: none; box-shadow: 0 4px 20px rgba(16, 185, 129, 0.4); cursor: pointer; z-index: 100; font-size: 24px; display: flex; align-items: center; justify-content: center; transition: var(--transition); }
+        .chatbot-fab:hover { transform: scale(1.1) rotate(5deg); }
+        .chat-window { position: fixed; bottom: 100px; right: 30px; width: 320px; height: 450px; background: var(--surface-color); backdrop-filter: blur(12px); border-radius: 20px; box-shadow: var(--shadow); z-index: 99; display: flex; flex-direction: column; transform: scale(0); transform-origin: bottom right; transition: var(--transition); overflow: hidden; border: 1px solid var(--surface-border); }
+        .chat-window.active { transform: scale(1); }
+        .chat-header { background: var(--primary-color); color: white; padding: 16px; display: flex; justify-content: space-between; align-items: center; font-weight: 600; }
+        .chat-body { flex: 1; padding: 16px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; }
+        .chat-msg { max-width: 80%; padding: 10px 14px; border-radius: 12px; font-size: 0.9rem; line-height: 1.4; }
+        .chat-msg.bot { background: var(--input-bg); color: var(--text-primary); border-bottom-left-radius: 2px; }
+        .chat-msg.user { background: var(--primary-color); color: white; align-self: flex-end; border-bottom-right-radius: 2px; }
+        .chat-input-area { padding: 12px; border-top: 1px solid var(--surface-border); display: flex; gap: 8px; }
+        .chat-input { flex: 1; padding: 8px 12px; border-radius: 20px; border: 1px solid var(--surface-border); background: var(--input-bg); color: var(--text-primary); }
+        .send-btn { background: none; border: none; color: var(--primary-color); font-size: 1.2rem; cursor: pointer; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+    /* Responsive Design */
+    @media (max-width: 1200px) {
+      .sidebar { width: 340px; left: 20px; }
+      .navbar { padding: 0 20px; }
+      .nav-links { gap: 24px; }
+      .nav-brand { font-size: 19px; }
+    }
+
+    @media (max-width: 992px) {
+      .sidebar { width: 320px; left: 15px; top: 15px; max-height: calc(100% - 30px); }
+      .sidebar-content { padding: 20px; }
+      .sidebar-title { font-size: 1rem; margin-bottom: 18px; }
+      .input-group { margin-bottom: 14px; }
+      .input-label { font-size: 0.7rem; margin-bottom: 5px; }
+      .styled-input { padding: 12px 40px 12px 40px; font-size: 0.9rem; }
+      .input-wrapper i.icon-left { left: 12px; }
+      .gps-btn { right: 6px; width: 28px; height: 28px; font-size: 16px; }
+      .primary-btn { padding: 12px; font-size: 0.95rem; }
+      .navbar { padding: 0 18px; }
+      .nav-links { gap: 22px; }
+      .nav-brand { font-size: 18px; }
+      .icon-btn { width: 38px; height: 38px; }
+    }
+
+    @media (max-width: 850px) {
+      .sidebar { width: 300px; }
+      .navbar { height: 60px; padding: 0 16px; }
+      .nav-brand { font-size: 17px; }
+      .nav-links { gap: 20px; }
+      .icon-btn { width: 36px; height: 36px; }
+      .sidebar-content { padding: 18px; }
+      .sidebar-title { font-size: 0.95rem; }
+      .styled-input { padding: 11px 38px 11px 38px; font-size: 0.88rem; }
+      .input-wrapper i.icon-left { left: 11px; }
+      .gps-btn { right: 5px; width: 26px; height: 26px; font-size: 15px; }
+      .primary-btn { padding: 11px; font-size: 0.92rem; }
+    }
+
+    @media (max-width: 768px) {
+      .nav-links {
+        display: none; /* Hide standard links */
+        position: absolute;
+        top: 64px; left: 0; width: 100%;
+        background: var(--nav-bg);
+        flex-direction: column;
+        padding: 20px;
+        border-bottom: 1px solid var(--surface-border);
+        gap: 16px;
+        backdrop-filter: blur(12px);
+        transform: translateY(-150%);
+        transition: transform 0.3s;
+      }
+      .nav-links.show { display: flex; transform: translateY(0); }
+      .nav-link.active::after { display: none; } /* Remove underline on mobile */
+      .menu-toggle { display: block; }
+
+      .sidebar { width: 100%; left: 0; bottom: 0; top: auto; max-height: 85vh; border-radius: 24px 24px 0 0; transform: translateY(calc(100% - 140px)); }
+      .sidebar.expanded { transform: translateY(0); }
+      .mobile-handle { display: block; width: 40px; height: 4px; background: var(--text-secondary); border-radius: 2px; margin: 10px auto; opacity: 0.5; }
+      .sidebar-content { padding: 16px; }
+      .sidebar-title { font-size: 1rem; margin-bottom: 16px; }
+      .input-group { margin-bottom: 12px; }
+      .input-label { font-size: 0.68rem; margin-bottom: 4px; }
+      .styled-input { padding: 10px 35px 10px 35px; font-size: 0.85rem; }
+      .input-wrapper i.icon-left { left: 10px; }
+      .gps-btn { right: 4px; width: 24px; height: 24px; font-size: 14px; }
+      .primary-btn { padding: 10px; font-size: 0.9rem; }
+      .chatbot-fab { bottom: 20px; right: 20px; width: 55px; height: 55px; font-size: 20px; }
+      .chat-window { bottom: 85px; right: 20px; width: 280px; height: 400px; }
+      .chat-header { padding: 14px; font-size: 0.95rem; }
+      .chat-body { padding: 14px; }
+      .chat-msg { font-size: 0.85rem; }
+      .chat-input { padding: 7px 11px; font-size: 0.85rem; }
+    }
+
+    @media (max-width: 576px) {
+      .navbar { height: 56px; padding: 0 12px; }
+      .nav-brand { font-size: 16px; gap: 8px; }
+      .nav-links { padding: 16px; gap: 12px; }
+      .nav-link { font-size: 0.9rem; }
+      .icon-btn { width: 32px; height: 32px; font-size: 1rem; }
+      .menu-toggle { font-size: 20px; }
+
+      .sidebar { max-height: 80vh; transform: translateY(calc(100% - 120px)); }
+      .sidebar.expanded { transform: translateY(0); }
+      .mobile-handle { width: 35px; height: 3px; margin: 8px auto; }
+      .sidebar-content { padding: 12px; }
+      .sidebar-title { font-size: 0.95rem; margin-bottom: 12px; }
+      .input-group { margin-bottom: 10px; }
+      .input-label { font-size: 0.7rem; margin-bottom: 4px; }
+      .styled-input { padding: 8px 30px 8px 30px; font-size: 0.8rem; }
+      .input-wrapper i.icon-left { left: 8px; }
+      .gps-btn { right: 2px; width: 20px; height: 20px; font-size: 12px; }
+      .primary-btn { padding: 8px; font-size: 0.85rem; }
+      .chatbot-fab { bottom: 15px; right: 15px; width: 50px; height: 50px; font-size: 18px; }
+      .chat-window { bottom: 75px; right: 15px; width: 250px; height: 350px; }
+      .chat-header { padding: 12px; font-size: 0.9rem; }
+      .chat-body { padding: 12px; }
+      .chat-msg { font-size: 0.8rem; }
+      .chat-input { padding: 6px 10px; font-size: 0.8rem; }
+    }
+
+    @media (max-width: 480px) {
+      .navbar { height: 52px; padding: 0 8px; }
+      .nav-brand { font-size: 14px; gap: 6px; }
+      .nav-links { padding: 12px; gap: 10px; }
+      .nav-link { font-size: 0.85rem; }
+      .icon-btn { width: 28px; height: 28px; font-size: 0.9rem; }
+      .menu-toggle { font-size: 18px; }
+
+      .sidebar { max-height: 75vh; transform: translateY(calc(100% - 100px)); }
+      .sidebar.expanded { transform: translateY(0); }
+      .mobile-handle { width: 30px; height: 2px; margin: 6px auto; }
+      .sidebar-content { padding: 10px; }
+      .sidebar-title { font-size: 0.9rem; margin-bottom: 10px; }
+      .input-group { margin-bottom: 8px; }
+      .input-label { font-size: 0.65rem; margin-bottom: 3px; }
+      .styled-input { padding: 6px 25px 6px 25px; font-size: 0.75rem; }
+      .input-wrapper i.icon-left { left: 6px; }
+      .gps-btn { right: 1px; width: 18px; height: 18px; font-size: 10px; }
+      .primary-btn { padding: 6px; font-size: 0.8rem; }
+      .chatbot-fab { bottom: 10px; right: 10px; width: 45px; height: 45px; font-size: 16px; }
+      .chat-window { bottom: 65px; right: 10px; width: 220px; height: 300px; }
+      .chat-header { padding: 10px; font-size: 0.8rem; }
+      .chat-body { padding: 10px; }
+      .chat-msg { font-size: 0.75rem; }
+      .chat-input { padding: 4px 8px; font-size: 0.75rem; }
+      .send-btn { font-size: 1rem; }
+    }
+    </style>
+</head>
+<body>
+
+    <!-- NAVBAR -->
+    <nav class="navbar">
+        <a href="#" class="nav-brand">
+            <i class="ri-charging-pile-2-fill"></i> EVahan
+        </a>
+
+        <div class="nav-links" id="nav-menu">
+            <a href="index.html" class="nav-link">Home</a>
+            <a href="ev_routing.html" class="nav-link active">Plan Trip</a>
+            <a href="ev_search.html" class="nav-link">Stations</a>
+            <a href="traffic.html" class="nav-link">Check Traffic</a>
+            <a href="ev_calculator.html" class="nav-link">calculate Cost</a>
+        </div>
+
+        <div class="nav-actions">
+            <button class="icon-btn" onclick="toggleTheme()" title="Toggle Theme">
+                <i class="ri-moon-line" id="theme-icon"></i>
+            </button>
+            
+        </div>
+    </nav>
+
+    <!-- APP CONTAINER -->
+    <div class="app-container">
+        <div id="map"></div>
+
+        <aside class="sidebar" id="main-sidebar">
+            <div class="mobile-handle" id="mobile-toggle"></div>
+
+            <div class="sidebar-content">
+                <div class="sidebar-title">
+                    <i class="ri-route-line"></i> Trip Planner
+                </div>
+
+                <div class="input-group">
+                    <label class="input-label" for="start">Start Point</label>
+                    <div class="input-wrapper">
+                        <i class="ri-map-pin-user-line icon-left"></i>
+                        <input class="styled-input" id="start" type="text" autocomplete="off" placeholder="Your location..." />
+                        <button class="gps-btn" id="gps-btn" onclick="useCurrentLocation()" title="Find My Location">
+                            <i class="ri-crosshair-2-line"></i>
+                        </button>
+                        <div class="suggestions" id="start-suggestions"></div>
+                    </div>
+                </div>
+
+                <div class="input-group">
+                    <label class="input-label" for="finish">Destination</label>
+                    <div class="input-wrapper">
+                        <i class="ri-map-pin-2-line icon-left"></i>
+                        <input class="styled-input" id="finish" type="text" autocomplete="off" placeholder="Where to?" />
+                        <div class="suggestions" id="finish-suggestions"></div>
+                    </div>
+                </div>
+
+                <button id="calculate" class="primary-btn" onclick="startRouteCalculation()">
+                    <span>Calculate Trip</span><i class="ri-arrow-right-line"></i>
+                </button>
+
+                <section id="summary">
+                    <div style="text-align: center; color: var(--text-secondary); margin-top:20px;">
+                        <i class="ri-road-map-line" style="font-size: 2rem; opacity: 0.5;"></i>
+                        <p style="margin-top: 10px; font-size: 0.9rem;">Route details will appear here.</p>
+                    </div>
+                </section>
+            </div>
+        </aside>
+
+        <!-- CHATBOT -->
+        <button id="chat-toggle-btn" onclick="toggleChat()">
+            <i class="fas fa-comment-dots"></i>
+        </button>
+
+        <div id="chat-window" class="chat-hidden">
+            <div class="chat-header">
+                <span><i class="fas fa-robot"></i> EV Assistant</span>
+                <button onclick="toggleChat()" class="close-chat">×</button>
+            </div>
+            <div id="chat-messages">
+                <div class="message bot-message">Need help finding a fast charger? Ask me!</div>
+            </div>
+            <div class="chat-input-area">
+                <input type="text" id="user-input" placeholder="Type..." onkeypress="handleEnter(event)">
+                <button onclick="sendMessage()"><i class="fas fa-paper-plane"></i></button>
+            </div>
+        </div>
+    </div>
+
+    <script src="ev_routing.js"></script>
+
+    <!-- Chatbot Scripts -->
+    <script src="config.js"></script>
+    <script src="chatbot.js"></script>
+
+    <script>
+        // --- Navbar Logic ---
+        function toggleMenu() {
+            document.getElementById('nav-menu').classList.toggle('show');
+        }
+
+        // --- Theme Logic ---
+        function toggleTheme() {
+            const body = document.body;
+            const btnIcon = document.getElementById('theme-icon');
+            if (body.getAttribute('data-theme') === 'dark') {
+                body.setAttribute('data-theme', 'light');
+                btnIcon.className = 'ri-moon-line';
+                localStorage.setItem('theme', 'light');
+            } else {
+                body.setAttribute('data-theme', 'dark');
+                btnIcon.className = 'ri-sun-line';
+                localStorage.setItem('theme', 'dark');
+            }
+        }
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme === 'dark') { document.body.setAttribute('data-theme', 'dark'); document.getElementById('theme-icon').className = 'ri-sun-line'; }
+
+        // --- Chat Logic ---
+        function toggleChat() { document.getElementById('chat-window').classList.toggle('chat-visible'); document.getElementById('chat-window').classList.toggle('chat-hidden'); }
+        function handleChat(e) { if (e.key === 'Enter') sendMessage(); }
+
+        // --- Mobile Sidebar Logic ---
+        const sidebar = document.getElementById('main-sidebar');
+        const handle = document.getElementById('mobile-toggle');
+        handle.addEventListener('click', () => { sidebar.classList.toggle('expanded'); });
+        document.querySelectorAll('input').forEach(input => {
+            input.addEventListener('focus', () => { if(window.innerWidth < 768) sidebar.classList.add('expanded'); });
+        });
+    </script>
+
+</body>
+</html>

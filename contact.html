@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact Us - EVahan</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="chatbot.css">
+    <style>
+        :root {
+            --primary: #2563eb;
+            --primary-dark: #1d4ed8;
+            --secondary: #0ea5e9;
+            --accent: #f59e0b;
+            --danger: #ef4444;
+            --success: #10b981;
+            --dark: #0f172a;
+            --light: #f8fafc;
+            --surface: #ffffff;
+            --border: #e2e8f0;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --gradient-bg: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            --shadow-card: 0 10px 30px -5px rgba(0,0,0,0.05);
+            --radius: 24px;
+        }
+        [data-theme="dark"] {
+            --primary: #3b82f6;
+            --secondary: #38bdf8;
+            --dark: #f8fafc;
+            --light: #0f172a;
+            --surface: #1e293b;
+            --border: #334155;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --gradient-bg: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background: var(--gradient-bg);
+            color: var(--text-main);
+            min-height: 100vh;
+            line-height: 1.7;
+        }
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 2rem; }
+        /* Navbar */
+        .navbar {
+            position: fixed; top: 0; width: 100%; z-index: 1000;
+            background: rgba(255,255,255,0.8); backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--border); padding: 1rem 0;
+            transition: all 0.3s;
+        }
+        [data-theme="dark"] .navbar { background: rgba(15, 23, 42, 0.9); }
+        .nav-content { display: flex; justify-content: space-between; align-items: center; }
+        .logo { 
+            font-size: 1.5rem; font-weight: 800; color: var(--primary); 
+            text-decoration: none; display: flex; align-items: center; gap: 8px; 
+        }
+        .nav-links { display: flex; gap: 2rem; align-items: center; }
+        .nav-link { color: var(--text-main); text-decoration: none; font-weight: 600; transition: color 0.2s; }
+        .nav-link:hover { color: var(--primary); }
+        .theme-toggle {
+            background: none; border: none; font-size: 1.2rem; cursor: pointer;
+            color: var(--text-main); padding: 0.5rem; transition: color 0.3s;
+        }
+        .theme-toggle:hover { color: var(--primary); }
+        /* Page Header */
+        .page-header {
+            padding: 140px 0 60px;
+            text-align: center;
+        }
+        .page-header h1 {
+            font-size: clamp(2rem, 5vw, 3rem);
+            font-weight: 800;
+            margin-bottom: 1rem;
+        }
+        .page-header h1 span {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .page-header p {
+            color: var(--text-muted);
+            font-size: 1.1rem;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        /* Contact Grid */
+        .contact-section { padding: 0 0 80px; }
+        .contact-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+        .contact-card {
+            background: var(--surface);
+            padding: 2.5rem;
+            border-radius: var(--radius);
+            border: 1px solid var(--border);
+            text-align: center;
+            transition: all 0.3s;
+        }
+        .contact-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-card);
+            border-color: var(--primary);
+        }
+        .contact-icon {
+            width: 70px; height: 70px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1.5rem;
+            font-size: 1.5rem;
+            color: white;
+        }
+        .contact-card h3 {
+            font-size: 1.3rem;
+            margin-bottom: 0.5rem;
+        }
+        .contact-card p {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+        }
+        .contact-card a {
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 600;
+        }
+        .contact-card a:hover {
+            text-decoration: underline;
+        }
+        /* Form Section */
+        .form-section {
+            padding: 0 0 80px;
+        }
+        .form-container {
+            max-width: 700px;
+            margin: 0 auto;
+            background: var(--surface);
+            padding: 3rem;
+            border-radius: var(--radius);
+            border: 1px solid var(--border);
+        }
+        .form-group { margin-bottom: 1.5rem; }
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: var(--text-main);
+        }
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 1rem;
+            border: 2px solid var(--border);
+            border-radius: 12px;
+            font-size: 1rem;
+            font-family: inherit;
+            background: var(--light);
+            color: var(--text-main);
+            transition: border-color 0.3s;
+        }
+        .form-group input:focus,
+        .form-group textarea:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+        .form-group textarea { min-height: 150px; resize: vertical; }
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            padding: 1rem 2rem;
+            border-radius: 50px;
+            font-weight: 600;
+            cursor: pointer;
+            border: none;
+            font-size: 1rem;
+        }
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+            box-shadow: 0 4px 14px rgba(37,99,235,0.3);
+        }
+        .btn-primary:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+        }
+        /* Footer */
+        footer { background: #0b1120; color: #94a3b8; padding: 60px 0 30px; }
+        .footer-grid { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); 
+            gap: 3rem; 
+            margin-bottom: 3rem;
+        }
+        .footer-brand h2 { color: white; margin-bottom: 1rem; }
+        .footer-col h4 { color: white; margin-bottom: 1.5rem; }
+        .footer-col a { 
+            display: block; color: #94a3b8; text-decoration: none; 
+            margin-bottom: 0.8rem; transition: color 0.2s; 
+        }
+        .footer-col a:hover { color: white; }
+        .copyright { border-top: 1px solid #1e293b; padding-top: 2rem; text-align: center; }
+        /* Responsive */
+        @media (max-width: 768px) {
+            .nav-links { display: none; }
+            .page-header { padding: 120px 0 40px; }
+            .contact-card { padding: 2rem; }
+            .form-container { padding: 2rem; }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container nav-content">
+            <a href="index.html" class="logo"><i class="fas fa-bolt"></i> EVahan</a>
+            <div class="nav-links">
+                <a href="index.html" class="nav-link">Home</a>
+                <a href="about.html" class="nav-link">About</a>
+                <button class="theme-toggle" onclick="toggleTheme()">
+                    <i class="fas fa-moon"></i>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <section class="page-header">
+        <div class="container">
+            <h1>Get In <span>Touch</span></h1>
+            <p>Have questions about EV charging? We're here to help. Reach out to our team.</p>
+        </div>
+    </section>
+
+    <section class="contact-section">
+        <div class="container">
+            <div class="contact-grid">
+                <div class="contact-card">
+                    <div class="contact-icon"><i class="fas fa-envelope"></i></div>
+                    <h3>Email Us</h3>
+                    <p>Send us an email anytime</p>
+                    <a href="mailto:support@EVahancharge.com">support@EVahancharge.com</a>
+                </div>
+                <div class="contact-card">
+                    <div class="contact-icon"><i class="fas fa-phone"></i></div>
+                    <h3>Call Us</h3>
+                    <p>Mon - Fri, 9AM - 6PM IST</p>
+                    <a href="tel:+919226774305">+91 9226774305</a>
+                </div>
+                <div class="contact-card">
+                    <div class="contact-icon"><i class="fas fa-map-marker-alt"></i></div>
+                    <h3>Visit Us</h3>
+                    <p>Our headquarters</p>
+                    <a href="#">Mumbai, India</a>
+                </div>
+                <div class="contact-card">
+                    <div class="contact-icon"><i class="fab fa-whatsapp"></i></div>
+                    <h3>WhatsApp</h3>
+                    <p>Quick chat support</p>
+                    <a href="https://wa.me/9226774305">+91 9226774305</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="form-section">
+        <div class="container">
+            <div class="form-container">
+                <h2 style="text-align: center; margin-bottom: 2rem;">Send Us a Message</h2>
+                <form id="contactForm">
+                    <div class="form-group">
+                        <label for="name">Full Name</label>
+                        <input type="text" id="name" name="name" required placeholder="Enter your name">
+                    </div>
+                    <div class="form-group">
+                        <label for="email">Email Address</label>
+                        <input type="email" id="email" name="email" required placeholder="Enter your email">
+                    </div>
+                    <div class="form-group">
+                        <label for="subject">Subject</label>
+                        <select id="subject" name="subject">
+                            <option value="general">General Inquiry</option>
+                            <option value="support">Technical Support</option>
+                            <option value="partnership">Partnership</option>
+                            <option value="feedback">Feedback</option>
+                            <option value="other">Other</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="message">Message</label>
+                        <textarea id="message" name="message" required placeholder="How can we help you?"></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary" style="width: 100%;">
+                        <i class="fas fa-paper-plane"></i> Send Message
+                    </button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-brand">
+                    <h2><i class="fas fa-bolt"></i> EVahan</h2>
+                    <p>Building India's electric future with smart infrastructure and verified data.</p>
+                </div>
+                <div class="footer-col">
+                    <h4>Platform</h4>
+                    <a href="ev_search.html">Find Stations</a>
+                    <a href="app_benefits.html">Route Planner</a>
+                    <a href="app_benefits.html">Traffic Monitor</a>
+                </div>
+                <div class="footer-col">
+                    <h4>Company</h4>
+                    <a href="about.html">About Us</a>
+                    <a href="contact.html">Contact</a>
+                    <a href="careers.html">Careers</a>
+                </div>
+                <div class="footer-col">
+                    <h4>Legal</h4>
+                    <a href="privacy.html">Privacy Policy</a>
+                    <a href="terms.html">Terms of Use</a>
+                </div>
+            </div>
+            <div class="copyright">
+                &copy; 2025 EVahan Technologies. All rights reserved.
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        const html = document.documentElement;
+        const themeBtn = document.querySelector('.theme-toggle');
+        let theme = localStorage.getItem('theme') || 'light';
+        html.setAttribute('data-theme', theme);
+        themeBtn.innerHTML = theme === 'dark' ? '<i class="fas fa-sun"></i>' : '<i class="fas fa-moon"></i>';
+
+        function toggleTheme() {
+            theme = theme === 'light' ? 'dark' : 'light';
+            html.setAttribute('data-theme', theme);
+            localStorage.setItem('theme', theme);
+            themeBtn.innerHTML = theme === 'dark' ? '<i class="fas fa-sun"></i>' : '<i class="fas fa-moon"></i>';
+        }
+
+        document.getElementById('contactForm').addEventListener('submit', function (e) {
+            e.preventDefault();
+            alert('Thank you for your message! We will get back to you soon.');
+            this.reset();
+        });
+    </script>
+</body>
+</html>
+

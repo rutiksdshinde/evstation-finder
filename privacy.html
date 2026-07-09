@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Privacy Policy - EVahan</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #2563eb;
+            --primary-dark: #1d4ed8;
+            --secondary: #0ea5e9;
+            --dark: #0f172a;
+            --light: #f8fafc;
+            --surface: #ffffff;
+            --border: #e2e8f0;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --gradient-bg: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+        }
+        [data-theme="dark"] {
+            --primary: #3b82f6;
+            --secondary: #38bdf8;
+            --dark: #f8fafc;
+            --light: #0f172a;
+            --surface: #1e293b;
+            --border: #334155;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --gradient-bg: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background: var(--gradient-bg);
+            color: var(--text-main);
+            line-height: 1.8;
+        }
+        .container { max-width: 900px; margin: 0 auto; padding: 0 2rem; }
+        
+        .navbar {
+            position: fixed; top: 0; width: 100%; z-index: 1000;
+            background: rgba(255,255,255,0.8); backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--border); padding: 1rem 0;
+        }
+        [data-theme="dark"] .navbar { background: rgba(15, 23, 42, 0.9); }
+        .nav-content { display: flex; justify-content: space-between; align-items: center; }
+        .logo { 
+            font-size: 1.5rem; font-weight: 800; color: var(--primary); 
+            text-decoration: none; display: flex; align-items: center; gap: 8px; 
+        }
+        .nav-links { display: flex; gap: 2rem; align-items: center; }
+        .nav-link { color: var(--text-main); text-decoration: none; font-weight: 600; }
+        .nav-link:hover { color: var(--primary); }
+        .theme-toggle {
+            background: none; border: none; font-size: 1.2rem; cursor: pointer;
+            color: var(--text-main); padding: 0.5rem;
+        }
+
+        .page-header {
+            padding: 140px 0 40px;
+            text-align: center;
+        }
+        .page-header h1 {
+            font-size: clamp(2rem, 5vw, 2.5rem);
+            font-weight: 800;
+            margin-bottom: 0.5rem;
+        }
+        .page-header p {
+            color: var(--text-muted);
+        }
+
+        .content { padding: 40px 0 80px; }
+        
+        .policy-section {
+            background: var(--surface);
+            padding: 2rem;
+            border-radius: 16px;
+            border: 1px solid var(--border);
+            margin-bottom: 1.5rem;
+        }
+        .policy-section h2 {
+            font-size: 1.4rem;
+            margin-bottom: 1rem;
+            color: var(--primary);
+        }
+        .policy-section p, .policy-section li {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+        }
+        .policy-section ul {
+            margin-left: 1.5rem;
+            margin-top: 0.5rem;
+        }
+        .policy-section li {
+            margin-bottom: 0.5rem;
+        }
+
+        .last-updated {
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            margin-top: 2rem;
+        }
+
+        footer { background: #0b1120; color: #94a3b8; padding: 40px 0 30px; }
+        .footer-grid { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); 
+            gap: 3rem; 
+            margin-bottom: 2rem;
+        }
+        .footer-brand h2 { color: white; margin-bottom: 1rem; }
+        .footer-col h4 { color: white; margin-bottom: 1rem; }
+        .footer-col a { 
+            display: block; color: #94a3b8; text-decoration: none; 
+            margin-bottom: 0.5rem; 
+        }
+        .footer-col a:hover { color: white; }
+        .copyright { border-top: 1px solid #1e293b; padding-top: 1.5rem; text-align: center; font-size: 0.9rem; }
+
+        @media (max-width: 768px) {
+            .nav-links { display: none; }
+            .page-header { padding: 120px 0 30px; }
+            .policy-section { padding: 1.5rem; }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container nav-content">
+<a href="index.html" class="logo"><i class="fas fa-bolt"></i> EVahan</a>
+
+            <div class="nav-links">
+                <a href="index.html" class="nav-link">Home</a>
+
+                <a href="about.html" class="nav-link">About</a>
+
+                <button class="theme-toggle" onclick="toggleTheme()">
+                    <i class="fas fa-moon"></i>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <section class="page-header">
+        <div class="container">
+            <h1>Privacy Policy</h1>
+            <p>Your privacy is important to us</p>
+        </div>
+    </section>
+
+    <section class="content">
+        <div class="container">
+            <div class="policy-section">
+<h2>1. Introduction</h2>
+                <p>EVahan Technologies Pvt. Ltd. ("we," "our," or "us") operates the EVahan platform. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you use our website, mobile application, and services.</p>
+            </div>
+
+            <div class="policy-section">
+                <h2>2. Information We Collect</h2>
+                <ul>
+                    <li><strong>Personal Information:</strong> Name, email address, phone number, and account credentials when you register.</li>
+                    <li><strong>Vehicle Information:</strong> EV model, battery capacity, and charging preferences.</li>
+                    <li><strong>Location Data:</strong> Real-time location when you use station finder and route planning features.</li>
+                    <li><strong>Usage Data:</strong> Pages visited, time spent, and interaction patterns on our platform.</li>
+                </ul>
+            </div>
+
+            <div class="policy-section">
+                <h2>3. How We Use Your Information</h2>
+                <ul>
+                    <li>To provide and maintain our EV charging station services</li>
+                    <li>To calculate optimal charging routes based on your vehicle's range</li>
+                    <li>To send you updates about station availability and promotions</li>
+                    <li>To improve our platform through analytics and user feedback</li>
+                    <li>To comply with legal obligations</li>
+                </ul>
+            </div>
+
+            <div class="policy-section">
+                <h2>4. Data Sharing & Disclosure</h2>
+                <p>We may share your information with:</p>
+                <ul>
+                    <li><strong>Charging Station Partners:</strong> To facilitate charging sessions</li>
+                    <li><strong>Service Providers:</strong> For technical infrastructure and analytics</li>
+                    <li><strong>Legal Authorities:</strong> When required by law or to protect rights</li>
+                </ul>
+                <p style="margin-top: 1rem;">We do NOT sell your personal data to third parties.</p>
+            </div>
+
+            <div class="policy-section">
+                <h2>5. Data Security</h2>
+                <p>We implement industry-standard security measures including SSL encryption, secure servers, and regular security audits. However, no method of transmission over the internet is 100% secure.</p>
+            </div>
+
+            <div class="policy-section">
+                <h2>6. Your Rights</h2>
+                <ul>
+                    <li><strong>Access:</strong> Request a copy of your personal data</li>
+                    <li><strong>Correction:</strong> Update inaccurate information</li>
+                    <li><strong>Deletion:</strong> Request deletion of your account and data</li>
+                    <li><strong>Opt-out:</strong> Unsubscribe from marketing communications</li>
+                </ul>
+            </div>
+
+            <div class="policy-section">
+                <h2>7. Cookies & Tracking</h2>
+                <p>We use cookies and similar tracking technologies to enhance your experience. You can control cookies through your browser settings.</p>
+            </div>
+
+            <div class="policy-section">
+                <h2>8. Children's Privacy</h2>
+                <p>Our services are not intended for users under 13 years of age. We do not knowingly collect data from children.</p>
+            </div>
+
+            <div class="policy-section">
+                <h2>9. Changes to This Policy</h2>
+                <p>We may update this Privacy Policy periodically. We will notify you of any material changes via email or app notification.</p>
+            </div>
+
+            <div class="policy-section">
+                <h2>10. Contact Us</h2>
+                <p>If you have questions about this Privacy Policy, please contact us at:</p>
+                <p style="margin-top: 0.5rem;">
+                    <strong>Email:</strong> privacy@EVahansearch.com<br>
+                    <strong>Address:</strong> Mumbai, India
+                </p>
+            </div>
+
+            <p class="last-updated">Last updated: January 2026</p>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-brand">
+<h2><i class="fas fa-bolt"></i> EVahan</h2>
+                </div>
+                <div class="footer-col">
+                    <h4>Company</h4>
+                    <a href="about.html">About Us</a>
+
+                    <a href="contact.html">Contact</a>
+
+                    <a href="careers.html">Careers</a>
+
+                </div>
+                <div class="footer-col">
+                    <h4>Legal</h4>
+                    <a href="privacy.html">Privacy Policy</a>
+
+                    <a href="terms.html">Terms of Use</a>
+
+                </div>
+            </div>
+            <div class="copyright">
+&copy; 2026 EVahan Technologies. All rights reserved.
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        const html = document.documentElement;
+        const themeBtn = document.querySelector('.theme-toggle');
+        let theme = localStorage.getItem('theme') || 'light';
+        html.setAttribute('data-theme', theme);
+        themeBtn.innerHTML = theme === 'dark' ? '<i class="fas fa-sun"></i>' : '<i class="fas fa-moon"></i>';
+        
+        function toggleTheme() {
+            theme = theme === 'light' ? 'dark' : 'light';
+            html.setAttribute('data-theme', theme);
+            localStorage.setItem('theme', theme);
+            themeBtn.innerHTML = theme === 'dark' ? '<i class="fas fa-sun"></i>' : '<i class="fas fa-moon"></i>';
+        }
+    </script>
+</body>
+</html>

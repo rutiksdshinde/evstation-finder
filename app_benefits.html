@@ -1,0 +1,408 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>EV Finder • App Benefits</title>
+  <style>
+    :root{
+      --bg:#0b1220;
+      --card:#0f1b33;
+      --text:#e9f1ff;
+      --muted:#a9b7d0;
+      --primary:#4f46e5;
+      --primary2:#22c55e;
+      --border:rgba(255,255,255,.10);
+      --surface:rgba(255,255,255,.03);
+    }
+
+    /* Light mode overrides (auto if user prefers light) */
+    @media (prefers-color-scheme: light){
+      :root{
+        --bg:#f6f8ff;
+        --card:#ffffff;
+        --text:#0f172a;
+        --muted:#475569;
+        --border:rgba(15,23,42,.10);
+        --surface:rgba(15,23,42,.03);
+      }
+    }
+
+    [data-theme="light"]{
+      --bg:#f6f8ff;
+      --card:#ffffff;
+      --text:#0f172a;
+      --muted:#475569;
+      --border:rgba(15,23,42,.10);
+      --surface:rgba(15,23,42,.03);
+    }
+
+    [data-theme="dark"]{
+      --bg:#0b1220;
+      --card:#0f1b33;
+      --text:#e9f1ff;
+      --muted:#a9b7d0;
+      --primary:#4f46e5;
+      --primary2:#22c55e;
+      --border:rgba(255,255,255,.10);
+      --surface:rgba(255,255,255,.03);
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+    background: radial-gradient(900px 500px at 20% 0%, rgba(79,70,229,.35), transparent 55%),
+                  radial-gradient(900px 500px at 80% 10%, rgba(34,197,94,.25), transparent 50%),
+                  var(--bg);
+    transition: background 0.2s, color 0.2s;
+
+      color:var(--text);
+      line-height:1.4;
+    }
+    header{
+      padding:28px 16px;
+      max-width:1100px;
+      margin:0 auto;
+    }
+    .topbar{
+      display:flex;align-items:center;justify-content:space-between;gap:12px;
+      margin-bottom:18px;
+    }
+    .brand{
+      display:flex;align-items:center;gap:12px;
+    }
+    .logo{
+      width:40px;height:40px;border-radius:12px;
+      background:linear-gradient(135deg, rgba(79,70,229,.9), rgba(34,197,94,.8));
+      display:flex;align-items:center;justify-content:center;
+      border:1px solid var(--border);
+      font-weight:800;
+    }
+    h1{margin:0;font-size:24px;letter-spacing:.2px}
+    .subtitle{margin:8px 0 0;color:var(--muted);max-width:720px}
+
+    .container{max-width:1100px;margin:0 auto;padding:0 16px 40px}
+
+    /* Navbar (shared styles) */
+    .navbar{
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      width: 100%;
+      margin-bottom: 16px;
+    }
+    .nav-inner{
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 14px 16px;
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      background: var(--surface);
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap: 12px;
+    }
+    .nav-brand{
+      text-decoration:none;
+      color: var(--text);
+      font-weight: 900;
+      display:flex;
+      align-items:center;
+      gap: 10px;
+    }
+    .nav-logo{
+      width:34px;height:34px;
+      border-radius:12px;
+      background: linear-gradient(135deg, rgba(79,70,229,.95), rgba(34,197,94,.85));
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      border:1px solid var(--border);
+      font-size: 14px;
+    }
+    .nav-links{
+      display:flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+    .nav-link{
+      text-decoration:none;
+      padding: 10px 12px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      color: var(--text);
+      font-weight: 700;
+      background: rgba(255,255,255,.02);
+    }
+    .nav-link:hover{
+      border-color: rgba(79,70,229,.5);
+      box-shadow: 0 10px 24px rgba(79,70,229,.12);
+    }
+
+    .hero{
+      display:grid;
+      grid-template-columns: 1.2fr .8fr;
+      gap:18px;
+      align-items:stretch;
+      margin-top:10px;
+    }
+    @media (max-width:900px){.hero{grid-template-columns:1fr}}
+
+    .hero-card{
+      background:linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.02));
+      border:1px solid var(--border);
+      border-radius:18px;
+      padding:18px;
+      box-shadow: 0 10px 30px rgba(0,0,0,.25);
+      position:relative;
+      overflow:hidden;
+    }
+    .hero-card:before{
+      content:"";
+      position:absolute;inset:-2px;
+      background: radial-gradient(600px 250px at 10% 10%, rgba(79,70,229,.35), transparent 55%),
+                  radial-gradient(500px 250px at 80% 0%, rgba(34,197,94,.25), transparent 50%);
+      pointer-events:none;
+      opacity:.9;
+    }
+    .hero-card > *{position:relative}
+
+    .chips{display:flex;flex-wrap:wrap;gap:10px;margin-top:14px}
+    .chip{
+      border:1px solid var(--border);
+      background:rgba(255,255,255,.04);
+      color:var(--text);
+      padding:8px 10px;
+      border-radius:999px;
+      font-size:13px;
+      display:flex;gap:8px;align-items:center;
+    }
+
+    .grid{
+      display:grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap:14px;
+      margin-top:16px;
+    }
+    @media (max-width:900px){.grid{grid-template-columns:1fr}}
+
+    .feature{
+      background:rgba(255,255,255,.04);
+      border:1px solid var(--border);
+      border-radius:16px;
+      padding:16px;
+    }
+    .feature .icon{
+      width:40px;height:40px;border-radius:14px;
+      background:rgba(79,70,229,.18);
+      border:1px solid rgba(79,70,229,.35);
+      display:flex;align-items:center;justify-content:center;
+      margin-bottom:10px;
+      font-size:18px;
+    }
+    .feature h3{margin:0 0 8px;font-size:16px}
+    .feature p{margin:0;color:var(--muted);font-size:14px}
+
+    .download{
+      display:flex;flex-direction:column;gap:12px;
+      justify-content:flex-start;
+    }
+    .download h2{margin:0 0 6px;font-size:18px}
+    .download p{margin:0;color:var(--muted);font-size:14px}
+
+    .store-buttons{display:flex;flex-direction:column;gap:10px;margin-top:12px}
+    .store-btn{
+      text-decoration:none;
+      display:flex;align-items:center;justify-content:center;gap:10px;
+      padding:12px 14px;
+      border-radius:14px;
+      border:1px solid var(--border);
+      background:rgba(255,255,255,.04);
+      color:var(--text);
+      font-weight:700;
+    }
+    .store-btn span{font-weight:600;color:var(--muted);font-size:12px;display:block}
+    .store-btn strong{font-size:16px}
+    .store-badge{width:34px;height:34px;border-radius:12px;background:rgba(34,197,94,.18);border:1px solid rgba(34,197,94,.35);display:flex;align-items:center;justify-content:center}
+
+    .cta{
+      margin-top:18px;
+      display:flex;gap:12px;flex-wrap:wrap;
+      align-items:center;justify-content:space-between;
+      background:rgba(255,255,255,.03);
+      border:1px dashed rgba(255,255,255,.18);
+      padding:14px;
+      border-radius:16px;
+    }
+    .cta .small{color:var(--muted);font-size:13px}
+
+    .btn{
+      border:0;
+      padding:11px 14px;
+      border-radius:14px;
+      background: linear-gradient(135deg, rgba(79,70,229,.95), rgba(34,197,94,.85));
+      color:white;
+      font-weight:800;
+      cursor:pointer;
+      text-decoration:none;
+      display:inline-flex;align-items:center;gap:10px;
+      box-shadow: 0 10px 26px rgba(0,0,0,.25);
+    }
+    footer{padding:20px 16px;color:var(--muted);text-align:center;}
+  </style>
+</head>
+<body>
+  <header>
+    <nav class="navbar">
+      <div class="nav-inner">
+        <a href="index.html" class="nav-brand">
+          <span class="nav-logo">EV</span>
+          <span>EV Station Finder</span>
+        </a>
+        <div class="nav-links">
+          <a href="ev_search.html" class="nav-link">Find Stations</a>
+          <a href="ev_routing.html" class="nav-link">Plan Route</a>
+          <a href="traffic.html" class="nav-link">Traffic</a>
+          <button id="theme-toggle" class="nav-link" style="cursor:pointer" type="button">
+            <i class="fas fa-moon"></i>
+          </button>
+        </div>
+      </div>
+    </nav>
+    <div class="topbar">
+
+      <div class="brand">
+        <div class="logo">EV</div>
+        <div>
+          <h1>EV Station Finder</h1>
+          <div class="subtitle">Everything you need to plan, find, and power your next EV trip.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="hero">
+      <div class="hero-card">
+        <h2 style="margin:0 0 6px;font-size:20px">Why the EV Finder app?</h2>
+        <div style="color:var(--muted);font-size:14px">Fast search, smarter route planning, and traffic-aware trip guidance—optimized for mobile.</div>
+
+        <div class="chips">
+          <div class="chip">⚡ Live availability (when supported)</div>
+          <div class="chip">🧭 EV route planner with charging stops</div>
+          <div class="chip">🚦 Traffic detection & flow overlay</div>
+          <div class="chip">💰 Cost & consumption estimate</div>
+        </div>
+
+        <div class="grid">
+          <div class="feature">
+            <div class="icon">🔍</div>
+            <h3>Station Finder</h3>
+            <p>Search nearby charging stations and open quick connector details right on the map.</p>
+          </div>
+          <div class="feature">
+            <div class="icon">🗺️</div>
+            <h3>Route Planner</h3>
+            <p>Plan long-distance EV routes with battery-aware recommendations and charging stops.</p>
+          </div>
+          <div class="feature">
+            <div class="icon">🚦</div>
+            <h3>Traffic Detection</h3>
+            <p>See incidents and traffic flow overlays to better estimate travel time.</p>
+          </div>
+          <div class="feature">
+            <div class="icon">🧮</div>
+            <h3>Cost & Calculator</h3>
+            <p>Estimate consumption and charging time to plan trips confidently.</p>
+          </div>
+          <div class="feature">
+            <div class="icon">🤝</div>
+            <h3>Feedback & Improvements</h3>
+            <p>Report issues and rate your experience so the community stays accurate.</p>
+          </div>
+          <div class="feature">
+            <div class="icon">💬</div>
+            <h3>Chat Support</h3>
+            <p>Ask questions and get guidance inside the app.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="hero-card download">
+        <h2>Get the app</h2>
+        <p>Download EV Station Finder for Android. Links are placeholders—replace when Play Store is ready.</p>
+
+        <div class="store-buttons">
+          <a class="store-btn" href="" target="_blank" rel="noopener noreferrer">
+            <div class="store-badge">▶</div>
+            <div>
+              <span>Download on</span>
+              <strong>Google Play</strong>
+            </div>
+          </a>
+
+          <a class="store-btn" href="" target="_blank" rel="noopener noreferrer">
+            <div class="store-badge">⬇</div>
+            <div>
+              <span>Install /</span>
+              <strong>Get Android App</strong>
+            </div>
+          </a>
+        </div>
+
+        <div class="cta">
+          <div>
+            <div style="font-weight:800">Next step</div>
+            <div class="small">Replace the empty links once you publish.</div>
+          </div>
+          <a class="btn" href="" onclick="event.preventDefault();" aria-label="Replace link when ready">
+            📲 Download
+          </a>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <div class="container">
+    <div style="background:rgba(255,255,255,.03);border:1px solid var(--border);border-radius:18px;padding:16px">
+      <h2 style="margin:0 0 8px;font-size:18px">Built for EV trips, not just maps</h2>
+      <p style="margin:0;color:var(--muted);font-size:14px">
+        EV Finder helps you decide where to charge, how long it takes, and how traffic impacts your journey.
+        When connectivity is limited, you can still access key information and plan ahead.
+      </p>
+    </div>
+  </div>
+
+  <footer>
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-brand">
+                    <h2><i class="fas fa-bolt"></i> EVahan</h2>
+                    <p>Building India's electric future with smart infrastructure and verified data.</p>
+                </div>
+                <div class="footer-col">
+                    <h4>Platform</h4>
+                    <a href="ev_search.html">Find Stations</a>
+                    <a href="ev_routing.html">Route Planner</a>
+                    <a href="traffic.html">Traffic Monitor</a>
+                </div>
+                <div class="footer-col">
+                    <h4>Company</h4>
+                    <a href="about.html">About Us</a>
+                    <a href="contact.html">Contact</a>
+                    <a href="careers.html">Careers</a>
+                </div>
+                <div class="footer-col">
+                    <h4>Legal</h4>
+                    <a href="privacy.html">Privacy Policy</a>
+                    <a href="terms.html">Terms of Use</a>
+                </div>
+            </div>
+            <div class="copyright">
+                &copy; 2026 EVahan Technologies. All rights reserved.
+            </div>
+        </div>
+    </footer>
+</body>
+</html>
+

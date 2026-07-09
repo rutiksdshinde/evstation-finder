@@ -1,0 +1,917 @@
+
+
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+<title>EVahan | India's Intelligent EV Network</title>
+    
+    <!-- Fonts & Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Chatbot CSS -->
+    <link rel="stylesheet" href="chatbot.css">
+    
+    <style>
+        /* --- VARIABLES --- */
+        :root {
+            --primary: #2563eb;
+            --primary-dark: #1d4ed8;
+            --secondary: #0ea5e9;
+            --accent: #f59e0b;
+            --danger: #ef4444;
+            --success: #10b981;
+            --dark: #0f172a;
+            --light: #f8fafc;
+            --surface: #ffffff;
+            --border: #e2e8f0;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --gradient-hero: linear-gradient(135deg, #eff6ff 0%, #ffffff 100%);
+            --shadow-card: 0 10px 30px -5px rgba(0,0,0,0.05);
+            --radius: 24px;
+        }
+
+        [data-theme="dark"] {
+            --primary: #3b82f6;
+            --secondary: #38bdf8;
+            --dark: #f8fafc;
+            --light: #0f172a;
+            --surface: #1e293b;
+            --border: #334155;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --gradient-hero: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+        }
+
+        /* --- BASE --- */
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        html { scroll-behavior: smooth; }
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background: var(--light);
+            color: var(--text-main);
+            line-height: 1.7;
+            overflow-x: hidden;
+            transition: background 0.3s, color 0.3s;
+        }
+
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 2rem; }
+        
+        .badge {
+            display: inline-block; padding: 0.5rem 1rem;
+            background: rgba(37, 99, 235, 0.1); color: var(--primary);
+            border-radius: 50px; font-weight: 700; font-size: 0.85rem;
+            text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 1rem;
+        }
+        .section-header { text-align: center; max-width: 760px; margin: 0 auto 4rem; }
+        .section-title { font-size: 2.5rem; font-weight: 800; margin-bottom: 1rem; }
+        .section-desc { color: var(--text-muted); font-size: 1.1rem; line-height: 1.6; }
+        
+        /* --- BUTTONS --- */
+        .btn {
+            display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem;
+            padding: 0.85rem 2rem; border-radius: 50px;
+            font-weight: 600; text-decoration: none;
+            transition: all 0.3s ease; cursor: pointer; border: none;
+            font-size: 0.95rem; white-space: nowrap;
+        }
+        .btn-primary { background: var(--primary); color: white; box-shadow: 0 4px 14px rgba(37,99,235,0.3); }
+        .btn-primary:hover { background: var(--primary-dark); transform: translateY(-2px); box-shadow: 0 8px 20px rgba(37,99,235,0.4); }
+        .btn-outline { background: transparent; border: 2px solid var(--border); color: var(--text-main); }
+        .btn-outline:hover { border-color: var(--primary); color: var(--primary); }
+        .btn-secondary { background: var(--secondary); color: white; }
+        .btn-secondary:hover { background: #0284c7; transform: translateY(-2px); }
+
+        /* --- NAVBAR --- */
+        .navbar {
+            position: fixed; top: 0; width: 100%; z-index: 1000;
+            background: rgba(255,255,255,0.8); backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--border); padding: 1rem 0;
+            transition: all 0.3s;
+        }
+        [data-theme="dark"] .navbar { background: rgba(15, 23, 42, 0.9); }
+        .navbar.scrolled { box-shadow: 0 4px 20px rgba(0,0,0,0.1); }
+        
+        .nav-content { display: flex; justify-content: space-between; align-items: center; }
+        .logo { 
+            font-size: 1.5rem; font-weight: 800; color: var(--primary); 
+            text-decoration: none; display: flex; align-items: center; gap: 8px; 
+        }
+        
+        .nav-links { display: flex; gap: 1rem; align-items: center; justify-content: flex-end; flex-wrap: nowrap; }
+        .nav-link { color: var(--text-main); text-decoration: none; font-weight: 600; transition: color 0.2s; }
+        .nav-link:hover { color: var(--primary); }
+
+        .nav-actions { display: flex; align-items: center; gap: 1rem; }
+
+        
+        .nav-toggle {
+            display: none; background: none; border: none; font-size: 1.5rem;
+            color: var(--text-main); cursor: pointer;
+        }
+
+        /* --- HERO --- */
+        .hero {
+            padding: 160px 0 100px;
+            background: var(--gradient-hero);
+            position: relative; overflow: hidden;
+        }
+        .hero-grid { display: grid; grid-template-columns: 1.2fr 1fr; gap: 4rem; align-items: center; }
+        .hero h1 { font-size: clamp(2.5rem, 6vw, 4rem); line-height: 1.1; font-weight: 800; margin-bottom: 1.5rem; }
+        .hero h1 span { 
+            background: linear-gradient(135deg, var(--primary), var(--secondary)); 
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent; 
+        }
+        .hero-lead { font-size: clamp(1rem, 2vw, 1.25rem); color: var(--text-muted); margin-bottom: 2.5rem; max-width: 90%; }
+        
+        .hero-stats {
+            display: grid; grid-template-columns: repeat(3, 1fr); gap: 2rem;
+            margin-top: 3rem; padding-top: 2rem; border-top: 1px solid var(--border);
+        }
+        .stat strong { font-size: clamp(1.8rem, 4vw, 2.5rem); font-weight: 800; display: block; }
+        .stat span { color: var(--text-muted); font-size: 0.85rem; text-transform: uppercase; }
+        
+        .hero-buttons { display: flex; gap: 1rem; flex-wrap: wrap; }
+        
+        .hero-img {
+            width: 100%; border-radius: 24px;
+            box-shadow: 0 25px 50px -12px rgba(0,0,0,0.2);
+            transform: rotate(2deg); transition: transform 0.5s;
+        }
+        .hero-img:hover { transform: rotate(0); }
+
+        /* --- FEATURE CARDS --- */
+        .features-section { padding: 100px 0; background: var(--surface); }
+        .feature-grid { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); 
+            gap: 2rem; 
+        }
+        .feature-card {
+            padding: 2.5rem; border-radius: 24px;
+            background: var(--light); border: 1px solid var(--border);
+            transition: all 0.3s ease;
+        }
+        .feature-card:hover { 
+            transform: translateY(-10px); 
+            background: var(--surface); 
+            box-shadow: var(--shadow-card); 
+            border-color: var(--primary); 
+        }
+        .f-icon {
+            width: 60px; height: 60px; background: var(--primary); color: white;
+            border-radius: 16px; font-size: 1.5rem; display: flex;
+            align-items: center; justify-content: center; margin-bottom: 1.5rem;
+        }
+
+        /* --- NEW: ROUTE PLANNER & TRAFFIC SECTIONS --- */
+        .service-showcase {
+            padding: 100px 0;
+            background: var(--light);
+        }
+        .showcase-grid { 
+            display: grid; 
+            grid-template-columns: 1fr 1fr; 
+            gap: 4rem; 
+            align-items: center;
+            margin-bottom: 6rem;
+        }
+        .showcase-content h2 { font-size: 2.5rem; font-weight: 800; margin-bottom: 1.5rem; }
+        .showcase-content p { color: var(--text-muted); font-size: 1.1rem; margin-bottom: 2rem; line-height: 1.8; }
+        .showcase-features {
+            list-style: none; margin-bottom: 2rem;
+        }
+        .showcase-features li {
+            margin-bottom: 1rem; display: flex; gap: 12px;
+            color: var(--text-muted); font-size: 1.05rem;
+        }
+        .showcase-features i { color: var(--success); font-size: 1.2rem; margin-top: 2px; }
+        .showcase-img {
+            width: 100%; border-radius: 24px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+            border: 1px solid var(--border);
+        }
+
+        /* --- BATTERY TECH --- */
+        .tech-section { padding: 100px 0; background: var(--surface); }
+        .tech-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; align-items: center; }
+        .tech-card {
+            background: var(--light); padding: 2rem; border-radius: 24px;
+            border: 1px solid var(--border); margin-bottom: 1.5rem;
+        }
+        .tech-card h3 { display: flex; align-items: center; gap: 10px; margin-bottom: 1rem; }
+        .progress-bar { height: 8px; background: var(--border); border-radius: 4px; overflow: hidden; margin-top: 0.5rem; }
+        .progress-fill { height: 100%; background: var(--primary); transition: width 1s ease; }
+
+        /* --- CHARGING SPEEDS TABLE --- */
+        .speed-section { padding: 100px 0; background: var(--light); }
+        .speed-table {
+            width: 100%; border-collapse: collapse;
+            background: var(--surface); border-radius: 24px;
+            overflow: hidden; border: 1px solid var(--border);
+        }
+        .speed-table th, .speed-table td {
+            padding: 1.5rem; text-align: left;
+            border-bottom: 1px solid var(--border);
+        }
+        .speed-table th { background: var(--light); font-weight: 700; color: var(--primary); }
+        .speed-icon { font-size: 1.5rem; color: var(--text-muted); margin-right: 1rem; }
+
+        /* --- SAFETY --- */
+        .safety-section { padding: 100px 0; background: var(--surface); color: var(--text-main); }
+        .safety-grid { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); 
+            gap: 2rem; 
+        }
+        .safety-item { 
+            text-align: center; padding: 2rem; 
+            border: 1px solid rgba(255,255,255,0.1); 
+            border-radius: 20px;
+            transition: all 0.3s;
+        }
+        .safety-item:hover { border-color: var(--success); transform: translateY(-5px); }
+        .safety-item i { font-size: 3rem; color: var(--success); margin-bottom: 1.5rem; }
+        .safety-item h3 { margin-bottom: 1rem; }
+        .safety-item p { color: var(--text-muted); }
+
+        /* --- FAQ --- */
+        .faq-section { padding: 100px 0; background: var(--surface); }
+        .faq-grid { max-width: 800px; margin: 0 auto; }
+        .faq-item {
+            background: var(--light); border: 1px solid var(--border);
+            border-radius: 16px; padding: 1.5rem; margin-bottom: 1rem;
+            cursor: pointer; transition: all 0.3s;
+        }
+        .faq-item:hover { border-color: var(--primary); }
+        .faq-q { display: flex; justify-content: space-between; align-items: center; font-weight: 700; }
+        .faq-a { max-height: 0; overflow: hidden; color: var(--text-muted); padding-top: 0; transition: all 0.3s; }
+        .faq-item.active .faq-a { max-height: 300px; padding-top: 1rem; }
+        .faq-icon { transition: transform 0.3s; }
+        .faq-item.active .faq-icon { transform: rotate(180deg); }
+
+        /* --- FOOTER --- */
+        footer { background: #0b1120; color: #94a3b8; padding: 80px 0 40px; }
+        .footer-grid { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); 
+            gap: 3rem; 
+            margin-bottom: 3rem;
+        }
+        .footer-brand h2 { color: white; margin-bottom: 1rem; }
+        .footer-col h4 { color: white; margin-bottom: 1.5rem; }
+        .footer-col a { 
+            display: block; color: #94a3b8; text-decoration: none; 
+            margin-bottom: 0.8rem; transition: color 0.2s; 
+        }
+        .footer-col a:hover { color: white; }
+        .copyright { border-top: 1px solid #1e293b; padding-top: 2rem; text-align: center; }
+
+        /* --- ANIMATIONS --- */
+        .reveal { opacity: 0; transform: translateY(30px); transition: all 0.8s ease; }
+        .reveal.active { opacity: 1; transform: translateY(0); }
+
+        /* --- CHATBOT --- */
+        #chat-toggle-btn {
+            position: fixed; bottom: 30px; right: 30px;
+            width: 60px; height: 60px; border-radius: 50%;
+            background: var(--primary); color: white;
+            border: none; box-shadow: 0 10px 25px rgba(37,99,235,0.4);
+            cursor: pointer; z-index: 999;
+            font-size: 1.5rem; display: flex; align-items: center; justify-content: center;
+            transition: transform 0.3s;
+        }
+        #chat-toggle-btn:hover { transform: scale(1.1); }
+
+        /* --- RESPONSIVE --- */
+        @media (max-width: 1200px) {
+            .container { max-width: 100%; padding: 0 2rem; }
+            .hero-grid { grid-template-columns: 1.3fr 1fr; gap: 3rem; }
+            .section-title { font-size: 2.3rem; }
+        }
+
+        @media (max-width: 992px) {
+            .hero-grid { grid-template-columns: 1fr; text-align: center; gap: 2rem; }
+            .hero-lead { margin: 0 auto 2rem; max-width: 80%; }
+            .hero-buttons { justify-content: center; flex-wrap: wrap; }
+            .hero-stats { grid-template-columns: repeat(2, 1fr); gap: 2rem; }
+.hero-img { display: block; }
+
+            .showcase-grid { grid-template-columns: 1fr; gap: 3rem; }
+            .showcase-grid.reverse { direction: rtl; }
+            .showcase-grid.reverse > * { direction: ltr; }
+
+            .tech-grid { grid-template-columns: 1fr; }
+            .feature-grid { grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); }
+            .safety-grid { grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); }
+        }
+
+        @media (max-width: 768px) {
+            .nav-links {
+                position: fixed; top: 70px; left: 0; right: 0;
+                background: var(--surface); flex-direction: column;
+                padding: 2rem; gap: 1rem;
+                box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+                transform: translateY(-120%);
+                transition: transform 0.3s ease;
+            }
+            .nav-links.active { transform: translateY(0); }
+            .nav-toggle { display: block; }
+
+            .hero h1 { font-size: clamp(2rem, 8vw, 3rem); }
+            .hero-lead { font-size: clamp(0.9rem, 3vw, 1.1rem); }
+            .hero-buttons { flex-direction: column; width: 100%; }
+            .btn { width: 100%; padding: 1rem 2rem; font-size: 1rem; }
+            .hero-stats { grid-template-columns: 1fr; gap: 1.5rem; }
+
+            .section-header { margin-bottom: 3rem; }
+            .section-title { font-size: 2rem; }
+            .section-desc { font-size: 1rem; }
+
+            .feature-grid { grid-template-columns: 1fr; }
+            .feature-card { padding: 2rem; }
+
+            .showcase-content h2 { font-size: 2.2rem; }
+            .showcase-features li { font-size: 1rem; }
+
+            .tech-section { padding: 80px 0; }
+            .tech-card { padding: 1.5rem; }
+
+            .speed-section { padding: 80px 0; }
+            .speed-table { font-size: 0.8rem; }
+            .speed-table th, .speed-table td { padding: 0.8rem 0.3rem; }
+
+            .safety-section { padding: 80px 0; }
+            .safety-item { padding: 1.5rem; }
+
+            .faq-section { padding: 80px 0; }
+            .faq-grid { margin: 0 auto; }
+
+            .footer-grid { grid-template-columns: 1fr; gap: 2rem; }
+
+            .container { padding: 0 1rem; }
+        }
+
+        @media (max-width: 576px) {
+            .hero { padding: 120px 0 80px; }
+            .hero h1 { font-size: clamp(1.8rem, 10vw, 2.5rem); }
+            .hero-lead { font-size: clamp(0.85rem, 4vw, 1rem); margin-bottom: 1.5rem; }
+            .hero-buttons { gap: 0.5rem; }
+            .btn { padding: 0.9rem 1.5rem; font-size: 0.95rem; }
+
+            .section-title { font-size: 1.8rem; }
+            .section-desc { font-size: 0.95rem; }
+
+            .feature-card { padding: 1.5rem; }
+            .f-icon { width: 50px; height: 50px; font-size: 1.2rem; }
+
+            .showcase-content h2 { font-size: 2rem; }
+            .showcase-content p { font-size: 1rem; }
+
+            .speed-table th:nth-child(3), .speed-table td:nth-child(3) { display: none; }
+
+            .safety-item { text-align: center; padding: 1.5rem 1rem; }
+            .safety-item i { font-size: 2.5rem; }
+
+            .faq-item { padding: 1rem; }
+
+            footer { padding: 60px 0 30px; }
+            .footer-col h4 { margin-bottom: 1rem; }
+            .footer-col a { margin-bottom: 0.5rem; }
+
+            #chat-toggle-btn { width: 55px; height: 55px; font-size: 1.3rem; bottom: 25px; right: 15px; }
+        }
+
+        @media (max-width: 480px) {
+            .navbar { padding: 0.8rem 1rem; }
+            .logo { font-size: 1.3rem; }
+
+            .hero { padding: 100px 0 60px; }
+            .hero h1 { font-size: clamp(1.5rem, 12vw, 2rem); }
+            .hero-lead { font-size: clamp(0.8rem, 5vw, 0.95rem); }
+
+            .section-header { margin-bottom: 2rem; }
+            .section-title { font-size: 1.6rem; }
+            .section-desc { font-size: 0.9rem; }
+
+            .feature-card { padding: 1.2rem; }
+            .feature-card h3 { font-size: 1.1rem; }
+
+            .showcase-content h2 { font-size: 1.8rem; }
+            .showcase-content p { font-size: 0.95rem; }
+            .showcase-features li { font-size: 0.95rem; }
+
+            .tech-card h3 { font-size: 1rem; }
+            .tech-card p { font-size: 0.9rem; }
+
+            .speed-table { font-size: 0.75rem; }
+            .speed-table th, .speed-table td { padding: 0.6rem 0.2rem; }
+
+            .safety-item i { font-size: 2rem; }
+            .safety-item h3 { font-size: 1rem; }
+            .safety-item p { font-size: 0.9rem; }
+
+            .faq-item { padding: 0.8rem; }
+            .faq-q { font-size: 0.9rem; }
+            .faq-a { padding-top: 0.8rem; }
+
+            .copyright { padding-top: 1.5rem; font-size: 0.85rem; }
+
+            #chat-toggle-btn { width: 50px; height: 50px; font-size: 1.2rem; bottom: 20px; right: 10px; }
+        }
+
+        /* Loader */
+        #loader {
+            position: fixed; inset: 0; background: var(--light); z-index: 9999;
+            display: flex; justify-content: center; align-items: center;
+            transition: opacity 0.5s;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- LOADER -->
+    <div id="loader">
+        <div style="text-align:center">
+            <i class="fas fa-bolt fa-3x fa-spin" style="color:var(--primary); margin-bottom:1rem"></i>
+<h3>Loading EVahan...</h3>
+        </div>
+    </div>
+
+    <!-- NAVBAR -->
+    <nav class="navbar">
+        <div class="container nav-content">
+<a href="#" class="logo"><i class="fas fa-bolt"></i> EVahan</a>
+            <button class="nav-toggle" onclick="toggleNav()">
+                <i class="fas fa-bars"></i>
+            </button>
+            <div class="nav-links" id="navLinks">
+                <a href="#features" class="nav-link">Features</a>
+                <a href="#route-planner" class="nav-link">Route Planner</a>
+                <a href="#traffic" class="nav-link">Traffic</a>
+                
+                    <a href="about.html" class="nav-link">About Us</a>
+
+                <a href="ev_calculator.html" class="nav-link">calculate Cost</a>
+                <button id="theme-toggle" class="btn btn-outline" style="padding: 0.6rem 1rem;">
+                    <i class="fas fa-moon"></i>
+                </button>
+                <a href="ev_search.html" class="btn btn-primary">Find Station</a>
+                <a href="app_benefits.html" class="btn btn-outline">Download the App</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- HERO SECTION -->
+    <section class="hero">
+        <div class="container">
+            <div class="hero-grid">
+                <div class="hero-text reveal">
+                    <div class="badge">India's EV Intelligence Platform</div>
+                    <h1>Charge Smarter.<br>Drive <span>Further.</span></h1>
+                    <p class="hero-lead">Access 15,000+ verified charging stations, intelligent route planning with automatic charging stops, and live traffic detection to optimize your EV journey.</p>
+                    
+                    <div class="hero-buttons">
+                        <a href="ev_search.html" class="btn btn-primary">
+                            <i class="fas fa-location-arrow"></i> Find Charger
+                        </a>
+                        <a href="app_benefits.html" class="btn btn-secondary">
+                            <i class="fas fa-route"></i> Plan Route
+                        </a>
+                        <a href="app_benefits.html" class="btn btn-outline">
+                            <i class="fas fa-traffic-light"></i> Check Traffic
+                        </a>
+                    </div>
+
+                    <div class="hero-stats">
+                        <div class="stat">
+                            <strong data-target="15000">0</strong>
+                            <span>Connectors</span>
+                        </div>
+                        <div class="stat">
+                            <strong data-target="4500">0</strong>
+                            <span>Cities</span>
+                        </div>
+                        <div class="stat">
+                            <strong data-target="98">0%</strong>
+                            <span>Uptime</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="hero-img-container reveal">
+                    <img src="image/white-and-black-power-plug.webp" alt="EV Charging" class="hero-img">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FEATURES -->
+    <section id="features" class="features-section">
+        <div class="container">
+            <div class="section-header reveal">
+                <div class="badge">Core Platform</div>
+                <h2 class="section-title">Everything You Need</h2>
+                <p class="section-desc">Integrated tools for finding, planning, and optimizing your EV charging experience.</p>
+            </div>
+            
+            <div class="feature-grid">
+                <div class="feature-card reveal">
+                    <div class="f-icon"><i class="fas fa-map-marked-alt"></i></div>
+                    <h3>Station Finder</h3>
+                    <p style="color:var(--text-muted)">Real-time availability of 15K+ chargers. Filter by CCS2, Type-2, power, and distance.</p>
+                    <a href="ev_search.html" class="btn btn-outline" style="margin-top:1rem; width:100%">
+                        Search Now <i class="fas fa-arrow-right"></i>
+                    </a>
+                </div>
+                <div class="feature-card reveal">
+                    <div class="f-icon"><i class="fas fa-route"></i></div>
+                    <h3>Route Planner</h3>
+                    <p style="color:var(--text-muted)">Auto-calculate optimal charging stops based on your car's range and battery level.</p>
+                    <a href="app_benefits.html" class="btn btn-outline" style="margin-top:1rem; width:100%">
+                        Plan Trip <i class="fas fa-arrow-right"></i>
+                    </a>
+                </div>
+                <div class="feature-card reveal">
+                    <div class="f-icon"><i class="fas fa-traffic-light"></i></div>
+                    <h3>Traffic Monitor</h3>
+                    <p style="color:var(--text-muted)">Live congestion data to avoid delays on the way to charging stations.</p>
+                    <a href="app_benefits.html" class="btn btn-outline" style="margin-top:1rem; width:100%">
+                        View Traffic <i class="fas fa-arrow-right"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ROUTE PLANNER SHOWCASE -->
+    <section id="route-planner" class="service-showcase">
+        <div class="container">
+            <div class="showcase-grid">
+                <div class="showcase-content reveal">
+                    <div class="badge" style="background: rgba(14, 165, 233, 0.1); color: var(--secondary);">
+                        <i class="fas fa-route"></i> Route Optimizer
+                    </div>
+                    <h2>Plan Long Trips Without Range Anxiety</h2>
+                    <p>Enter your destination and vehicle model. Our AI calculates the perfect charging stops to minimize travel time while ensuring you never run below 20% battery.</p>
+                    
+                    <ul class="showcase-features">
+                        <li><i class="fas fa-check-circle"></i> <strong>Auto Charging Stops:</strong> Adds stations based on your EV's range (Nexon, ZS, Kona supported)</li>
+                        <li><i class="fas fa-check-circle"></i> <strong>Time Optimization:</strong> Balances charging time vs driving time for fastest route</li>
+                        <li><i class="fas fa-check-circle"></i> <strong>Battery Arrival %:</strong> Shows exact battery level at each stop</li>
+                        <li><i class="fas fa-check-circle"></i> <strong>Alternative Routes:</strong> Compare 3 different route options with charging variants</li>
+                    </ul>
+                    
+                    <a href="app_benefits.html" class="btn btn-primary" style="font-size:1.1rem; padding:1rem 2.5rem">
+                        <i class="fas fa-map"></i> Open Route Planner
+                    </a>
+                </div>
+                <div class="reveal">
+                    <img src="https://images.unsplash.com/photo-1592838064575-70ed626d3a0e?w=600&h=400&fit=crop" 
+                         alt="Route Planning" class="showcase-img"
+                         onerror="this.src='https://via.placeholder.com/600x400/2563eb/ffffff?text=Route+Planner'">
+                </div>
+            </div>
+
+            <!-- TRAFFIC SHOWCASE -->
+            <div class="showcase-grid reverse" id="traffic">
+                <div class="reveal">
+                    <img src="https://images.unsplash.com/photo-1486299267070-83823f5448dd?w=600&h=400&fit=crop" 
+                         alt="Traffic Monitor" class="showcase-img"
+                         onerror="this.src='https://via.placeholder.com/600x400/0ea5e9/ffffff?text=Traffic+Monitor'">
+                </div>
+                <div class="showcase-content reveal">
+                    <div class="badge" style="background: rgba(239, 68, 68, 0.1); color: var(--danger);">
+                        <i class="fas fa-traffic-light"></i> Live Traffic
+                    </div>
+                    <h2>Avoid Delays with Real-Time Traffic</h2>
+                    <p>Integrated traffic intelligence shows live congestion, accidents, and roadblocks. Choose the fastest path to your charging station.</p>
+                    
+                    <ul class="showcase-features">
+                        <li><i class="fas fa-check-circle"></i> <strong>Live Incidents:</strong> Real-time accident, construction, and hazard alerts</li>
+                        <li><i class="fas fa-check-circle"></i> <strong>Flow Visualization:</strong> Color-coded roads (Green = Free, Red = Congested)</li>
+                        <li><i class="fas fa-check-circle"></i> <strong>Bounding Box Search:</strong> Draw custom area to check traffic in specific zones</li>
+                        <li><i class="fas fa-check-circle"></i> <strong>ETA Adjustment:</strong> Updates arrival time based on current traffic conditions</li>
+                    </ul>
+                    
+                    <a href="app_benefits.html" class="btn btn-primary" style="font-size:1.1rem; padding:1rem 2.5rem">
+                        <i class="fas fa-traffic-light"></i> Check Live Traffic
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- BATTERY TECH -->
+    <section class="tech-section">
+        <div class="container">
+            <div class="section-header reveal">
+                <div class="badge">EV Education</div>
+                <h2 class="section-title">Understanding Battery Technology</h2>
+                <p class="section-desc">Know your battery chemistry to charge smarter and extend lifespan.</p>
+            </div>
+            <div class="tech-grid">
+                <div class="reveal">
+                    <div class="tech-card">
+                        <h3><i class="fas fa-battery-full" style="color:var(--success)"></i> LFP (Lithium Iron Phosphate)</h3>
+                        <p style="color:var(--text-muted); font-size:0.95rem">Tata Nexon EV, MG ZS EV (Excite). Safer, 3000+ cycle life, heavier.</p>
+                        <div style="margin-top:1rem">
+                            <small>Safety Rating</small>
+                            <div class="progress-bar"><div class="progress-fill" style="width:95%"></div></div>
+                        </div>
+                    </div>
+                    <div class="tech-card">
+                        <h3><i class="fas fa-bolt" style="color:var(--accent)"></i> NMC (Nickel Manganese Cobalt)</h3>
+                        <p style="color:var(--text-muted); font-size:0.95rem">Hyundai Kona, Kia EV6. Higher energy density, better performance.</p>
+                        <div style="margin-top:1rem">
+                            <small>Energy Density</small>
+                            <div class="progress-bar"><div class="progress-fill" style="width:92%"></div></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="reveal">
+                    <h3 style="margin-bottom:1.5rem">Battery Care Tips</h3>
+                    <ul style="list-style:none; color:var(--text-muted); font-size:1.05rem;">
+                        <li style="margin-bottom:1.5rem">
+                            <i class="fas fa-check-circle" style="color:var(--success); margin-right:10px"></i> 
+                            <strong>Keep 20-80%:</strong> Avoid 100% charges for daily use
+                        </li>
+                        <li style="margin-bottom:1.5rem">
+                            <i class="fas fa-check-circle" style="color:var(--success); margin-right:10px"></i> 
+                            <strong>Slow Charging:</strong> Use AC overnight, reserve DC fast for highways
+                        </li>
+                        <li style="margin-bottom:1.5rem">
+                            <i class="fas fa-check-circle" style="color:var(--success); margin-right:10px"></i> 
+                            <strong>Cool Down:</strong> Wait 15 mins after high-speed driving
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CHARGING SPEEDS -->
+    <section class="speed-section">
+        <div class="container">
+            <div class="section-header reveal">
+                <div class="badge">Speed Guide</div>
+                <h2 class="section-title">Charging Times Explained</h2>
+            </div>
+            <div class="reveal" style="overflow-x:auto">
+                <table class="speed-table">
+                    <thead>
+                        <tr>
+                            <th>Charger Type</th>
+                            <th>Power</th>
+                            <th>Time (10-80%)</th>
+                            <th>Best For</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><i class="fas fa-home speed-icon"></i> Home Socket</td>
+                            <td>3.3 kW</td>
+                            <td>12 Hours</td>
+                            <td>Overnight</td>
+                        </tr>
+                        <tr>
+                            <td><i class="fas fa-charging-station speed-icon"></i> AC Wallbox</td>
+                            <td>7.4 kW</td>
+                            <td>6-8 Hours</td>
+                            <td>Office / Mall</td>
+                        </tr>
+                        <tr>
+                            <td><i class="fas fa-bolt speed-icon"></i> DC Fast</td>
+                            <td>25-50 kW</td>
+                            <td>60-90 Mins</td>
+                            <td>Quick top-up</td>
+                        </tr>
+                        <tr>
+                            <td><i class="fas fa-fighter-jet speed-icon"></i> Ultra Fast</td>
+                            <td>120 kW+</td>
+                            <td>25-40 Mins</td>
+                            <td>Highway trips</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+
+    <!-- SAFETY -->
+    <section id="safety" class="safety-section">
+        <div class="container">
+            <div class="section-header reveal">
+                <h2 class="section-title">Safety Standards</h2>
+                <p>Global-grade protection on every connector.</p>
+            </div>
+            <div class="safety-grid">
+                <div class="safety-item reveal">
+                    <i class="fas fa-shield-virus"></i>
+                    <h3>IP67 Waterproof</h3>
+                    <p>Safe in heavy rain. All connectors sealed against water and dust.</p>
+                </div>
+                <div class="safety-item reveal">
+                    <i class="fas fa-temperature-high"></i>
+                    <h3>Thermal Monitor</h3>
+                    <p>Auto-throttle if gun temp exceeds 50°C to prevent overheating.</p>
+                </div>
+                <div class="safety-item reveal">
+                    <i class="fas fa-lock"></i>
+                    <h3>Auto-Lock</h3>
+                    <p>Gun locks into port. Cannot be removed by strangers while charging.</p>
+                </div>
+                <div class="safety-item reveal">
+                    <i class="fas fa-bolt"></i>
+                    <h3>Surge Protection</h3>
+                    <p>Isolation transformers protect your EV from grid voltage spikes.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ -->
+    <section id="faq" class="faq-section">
+        <div class="container">
+            <div class="section-header reveal">
+                <h2 class="section-title">Common Questions</h2>
+            </div>
+            <div class="faq-grid reveal">
+                <div class="faq-item">
+                    <div class="faq-q">
+                        How accurate is the route planner?
+                        <i class="fas fa-chevron-down faq-icon"></i>
+                    </div>
+                    <div class="faq-a">
+                        Our planner uses real-time station data and your car's BMS profile. It's 95%+ accurate for Tata Nexon, MG ZS, Hyundai Kona. For best results, enter your current battery %.
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-q">
+                        Does traffic data update live?
+                        <i class="fas fa-chevron-down faq-icon"></i>
+                    </div>
+                    <div class="faq-a">
+                        Yes. Traffic layer refreshes every 60 seconds using TomTom Traffic API. Red roads = heavy congestion, yellow = moderate, green = free flow.
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-q">
+                        Can I reserve a charging slot?
+                        <i class="fas fa-chevron-down faq-icon"></i>
+                    </div>
+                    <div class="faq-a">
+                        Currently, only certain premium networks (e.g., Tata Power EZ Charge) support reservations. We show this with a "Reserve" badge on station cards.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer>
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-brand">
+                    <h2><i class="fas fa-bolt"></i> EVahan</h2>
+                    <p>Building India's electric future with smart infrastructure and verified data.</p>
+                </div>
+                <div class="footer-col">
+                    <h4>Platform</h4>
+                    <a href="ev_search.html">Find Stations</a>
+                    <a href="app_benefits.html">Route Planner</a>
+                    <a href="app_benefits.html">Traffic Monitor</a>
+                </div>
+                <div class="footer-col">
+                    <h4>Company</h4>
+                    <a href="about.html">About Us</a>
+
+                    <a href="feedback.html">Feedback</a>
+
+                    <a href="contact.html">Contact</a>
+
+                    <a href="careers.html">Careers</a>
+
+                </div>
+                <div class="footer-col">
+                    <h4>Legal</h4>
+                    <a href="privacy.html">Privacy Policy</a>
+
+                    <a href="terms.html">Terms of Use</a>
+
+                </div>
+            </div>
+            <div class="copyright">
+                &copy; 2026 EVahan Technologies. All rights reserved.
+            </div>
+        </div>
+    </footer>
+
+    <!-- CHATBOT BUTTON -->
+    <button id="chat-toggle-btn" onclick="toggleChat()">
+        <i class="fas fa-comment-dots"></i>
+    </button>
+
+    <!-- CHAT WINDOW -->
+    <div id="chat-window" class="chat-hidden">
+        <div class="chat-header">
+            <span><i class="fas fa-robot"></i> EV Assistant</span>
+            <button onclick="toggleChat()" class="close-chat">×</button>
+        </div>
+        <div id="chat-messages">
+            <div class="message bot-message">Hi! Ask me about charging stations, route planning, or EV tech.</div>
+        </div>
+        <div class="chat-input-area">
+            <input type="text" id="user-input" placeholder="Type your question..." onkeypress="handleEnter(event)">
+            <button onclick="sendMessage()"><i class="fas fa-paper-plane"></i></button>
+        </div>
+    </div>
+
+    <!-- SCRIPTS -->
+    <script src="config.js"></script>
+    <script src="chatbot.js"></script>
+    <script>
+        // Loader
+        window.addEventListener('load', () => {
+            const loader = document.getElementById('loader');
+            loader.style.opacity = '0';
+            setTimeout(() => { loader.style.display = 'none'; }, 500);
+        });
+
+        // Mobile Nav Toggle
+        function toggleNav() {
+            document.getElementById('navLinks').classList.toggle('active');
+        }
+
+        // Theme Toggle
+        const themeBtn = document.getElementById('theme-toggle');
+        const html = document.documentElement;
+        let theme = localStorage.getItem('theme') || 'light';
+        html.setAttribute('data-theme', theme);
+        themeBtn.innerHTML = theme === 'dark' ? '<i class="fas fa-sun"></i>' : '<i class="fas fa-moon"></i>';
+        
+        themeBtn.addEventListener('click', () => {
+            theme = theme === 'light' ? 'dark' : 'light';
+            html.setAttribute('data-theme', theme);
+            localStorage.setItem('theme', theme);
+            themeBtn.innerHTML = theme === 'dark' ? '<i class="fas fa-sun"></i>' : '<i class="fas fa-moon"></i>';
+        });
+
+        // Cross-tab theme sync
+        window.addEventListener('storage', (e) => {
+            if (e.key === 'theme') {
+                const newTheme = e.newValue || 'light';
+                html.setAttribute('data-theme', newTheme);
+                themeBtn.innerHTML = newTheme === 'dark' ? '<i class="fas fa-sun"></i>' : '<i class="fas fa-moon"></i>';
+            }
+        });
+
+        // Navbar Scroll
+        window.addEventListener('scroll', () => {
+            const nav = document.querySelector('.navbar');
+            if(window.scrollY > 50) nav.classList.add('scrolled');
+            else nav.classList.remove('scrolled');
+        });
+
+        // Stats Counter
+        const stats = document.querySelectorAll('[data-target]');
+        let counted = false;
+        const observer = new IntersectionObserver((entries) => {
+            if(entries[0].isIntersecting && !counted) {
+                counted = true;
+                stats.forEach(stat => {
+                    const target = +stat.getAttribute('data-target');
+                    const inc = target / 50;
+                    let c = 0;
+                    const t = setInterval(() => {
+                        c += inc;
+                        if(c >= target) { stat.innerText = Math.floor(target); clearInterval(t); }
+                        else stat.innerText = Math.floor(c);
+                    }, 30);
+                });
+            }
+        });
+        if(document.querySelector('.hero-stats')) observer.observe(document.querySelector('.hero-stats'));
+
+        // Scroll Reveal
+        const revealObserver = new IntersectionObserver((entries) => {
+            entries.forEach(e => { if(e.isIntersecting) e.target.classList.add('active'); });
+        }, {threshold: 0.1});
+        document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
+
+        // FAQ Toggle
+        document.querySelectorAll('.faq-item').forEach(item => {
+            item.addEventListener('click', () => { item.classList.toggle('active'); });
+        });
+
+        // Progress bars animation
+        setTimeout(() => {
+            document.querySelectorAll('.progress-fill').forEach((bar, i) => {
+                setTimeout(() => { bar.style.width = bar.style.width; }, i * 200);
+            });
+        }, 1000);
+    </script>
+</body>
+</html>

@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Terms of Use - EVahan</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #2563eb;
+            --primary-dark: #1d4ed8;
+            --secondary: #0ea5e9;
+            --dark: #0f172a;
+            --light: #f8fafc;
+            --surface: #ffffff;
+            --border: #e2e8f0;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --gradient-bg: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+        }
+        [data-theme="dark"] {
+            --primary: #3b82f6;
+            --secondary: #38bdf8;
+            --dark: #f8fafc;
+            --light: #0f172a;
+            --surface: #1e293b;
+            --border: #334155;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --gradient-bg: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background: var(--gradient-bg);
+            color: var(--text-main);
+            line-height: 1.8;
+        }
+        .container { max-width: 900px; margin: 0 auto; padding: 0 2rem; }
+
+        .navbar {
+            position: fixed; top: 0; width: 100%; z-index: 1000;
+            background: rgba(255,255,255,0.8); backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--border); padding: 1rem 0;
+        }
+        [data-theme="dark"] .navbar { background: rgba(15, 23, 42, 0.9); }
+        .nav-content { display: flex; justify-content: space-between; align-items: center; }
+        .logo {
+            font-size: 1.5rem; font-weight: 800; color: var(--primary);
+            text-decoration: none; display: flex; align-items: center; gap: 8px;
+        }
+        .nav-links { display: flex; gap: 2rem; align-items: center; }
+        .nav-link { color: var(--text-main); text-decoration: none; font-weight: 600; }
+        .nav-link:hover { color: var(--primary); }
+        .theme-toggle {
+            background: none; border: none; font-size: 1.2rem; cursor: pointer;
+            color: var(--text-main); padding: 0.5rem;
+        }
+
+        .page-header {
+            padding: 140px 0 40px;
+            text-align: center;
+        }
+        .page-header h1 {
+            font-size: clamp(2rem, 5vw, 2.5rem);
+            font-weight: 800;
+            margin-bottom: 0.5rem;
+        }
+        .page-header p { color: var(--text-muted); }
+
+        .content { padding: 40px 0 80px; }
+
+        .policy-section {
+            background: var(--surface);
+            padding: 2rem;
+            border-radius: 16px;
+            border: 1px solid var(--border);
+            margin-bottom: 1.5rem;
+        }
+        .policy-section h2 {
+            font-size: 1.4rem;
+            margin-bottom: 1rem;
+            color: var(--primary);
+        }
+        .policy-section p, .policy-section li {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+        }
+        .policy-section ul { margin-left: 1.5rem; margin-top: 0.5rem; }
+        .policy-section li { margin-bottom: 0.5rem; }
+
+        .last-updated {
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            margin-top: 2rem;
+        }
+
+        footer { background: #0b1120; color: #94a3b8; padding: 40px 0 30px; }
+        .footer-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 3rem;
+            margin-bottom: 2rem;
+        }
+        .footer-brand h2 { color: white; margin-bottom: 1rem; }
+        .footer-col h4 { color: white; margin-bottom: 1rem; }
+        .footer-col a {
+            display: block; color: #94a3b8; text-decoration: none;
+            margin-bottom: 0.5rem;
+        }
+        .footer-col a:hover { color: white; }
+        .copyright { border-top: 1px solid #1e293b; padding-top: 1.5rem; text-align: center; font-size: 0.9rem; }
+
+        @media (max-width: 768px) {
+            .nav-links { display: none; }
+            .page-header { padding: 120px 0 30px; }
+            .policy-section { padding: 1.5rem; }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container nav-content">
+            <a href="index.html" class="logo"><i class="fas fa-bolt"></i> EVahan</a>
+            <div class="nav-links">
+                <a href="index.html" class="nav-link">Home</a>
+                <a href="about.html" class="nav-link">About</a>
+                <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle theme">
+                    <i class="fas fa-moon"></i>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <section class="page-header">
+        <div class="container">
+            <h1>Terms of Use</h1>
+            <p>Please read these terms carefully</p>
+        </div>
+    </section>
+
+    <section class="content">
+        <div class="container">
+            <div class="policy-section">
+                <h2>1. Acceptance of Terms</h2>
+                <p>By accessing and using EVahan's platform, you accept and agree to be bound by the terms and provision of this agreement. If you do not agree to abide by these terms, please do not use this service.</p>
+            </div>
+
+            <div class="policy-section">
+                <h2>2. Description of Service</h2>
+                <p>EVahan provides:</p>
+                <ul>
+                    <li>EV charging station location finder and real-time availability</li>
+                    <li>Route planning with automatic charging stop optimization</li>
+                    <li>Live traffic monitoring</li>
+                    <li>EV cost calculator and charging time estimation</li>
+                </ul>
+            </div>
+
+            <div class="policy-section">
+                <h2>3. User Accounts</h2>
+                <ul>
+                    <li>You must provide accurate and complete registration information</li>
+                    <li>You are responsible for maintaining the confidentiality of your account</li>
+                    <li>You agree to accept responsibility for all activities under your account</li>
+                    <li>We reserve the right to terminate accounts at our discretion</li>
+                </ul>
+            </div>
+
+            <div class="policy-section">
+                <h2>4. User Conduct</h2>
+                <p>You agree NOT to:</p>
+                <ul>
+                    <li>Use the service for any unlawful purpose</li>
+                    <li>Attempt to gain unauthorized access to any part of the platform</li>
+                    <li>Interfere with or disrupt the service</li>
+                    <li>Submit false or misleading information</li>
+                    <li>Harass, abuse, or harm another user</li>
+                </ul>
+            </div>
+
+            <div class="policy-section">
+                <h2>5. Intellectual Property</h2>
+                <p>The EVahan platform, including all content, features, and functionality, is owned by EVahan Technologies Pvt. Ltd. and is protected by copyright, trademark, and other intellectual property laws.</p>
+            </div>
+
+            <div class="policy-section">
+                <h2>6. Charging Station Information</h2>
+                <ul>
+                    <li>We strive to provide accurate station data but cannot guarantee 100% accuracy</li>
+                    <li>Station availability, pricing, and operating hours may change without notice</li>
+                    <li>Users should verify station details before visiting</li>
+                    <li>We are not responsible for any disputes with charging station operators</li>
+                </ul>
+            </div>
+
+            <div class="policy-section">
+                <h2>7. Disclaimers</h2>
+                <ul>
+                    <li>The service is provided "as is" without warranties of any kind</li>
+                    <li>We do not guarantee the accuracy or completeness of any information</li>
+                    <li>Route calculations are estimates and may vary based on actual conditions</li>
+                    <li>We are not liable for any damages arising from use of the service</li>
+                </ul>
+            </div>
+
+            <div class="policy-section">
+                <h2>8. Limitation of Liability</h2>
+                <p>In no event shall EVahan be liable for any indirect, incidental, special, consequential, or punitive damages, including without limitation, loss of profits, data, use, goodwill, or other intangible losses.</p>
+            </div>
+
+            <div class="policy-section">
+                <h2>9. Indemnification</h2>
+                <p>You agree to indemnify, defend, and hold harmless EVahan and its officers, directors, employees, and agents from any claims, damages, liabilities, costs, or expenses arising from your use of the service.</p>
+            </div>
+
+            <div class="policy-section">
+                <h2>10. Termination</h2>
+                <p>We may terminate or suspend your access to the service immediately, without prior notice or liability, for any reason, including breach of these Terms.</p>
+            </div>
+
+            <div class="policy-section">
+                <h2>11. Governing Law</h2>
+                <p>These Terms shall be governed by and construed in accordance with the laws of India. Any disputes shall be subject to the jurisdiction of courts in Bengaluru, Karnataka, India.</p>
+            </div>
+
+            <div class="policy-section">
+                <h2>12. Changes to Terms</h2>
+                <p>We reserve the right to modify these terms at any time. Continued use of the platform after changes constitutes acceptance of the new terms.</p>
+            </div>
+
+            <div class="policy-section">
+                <h2>13. Contact Information</h2>
+                <p>For questions about these Terms, please contact us at:</p>
+                <p style="margin-top: 0.5rem;">
+                    <strong>Email:</strong> legal@EVahansearch.com<br>
+                    <strong>Address:</strong> Mumbai, India
+                </p>
+            </div>
+
+            <p class="last-updated">Last updated: January 2026</p>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-brand">
+                    <h2><i class="fas fa-bolt"></i> EVahan</h2>
+                </div>
+                <div class="footer-col">
+                    <h4>Company</h4>
+                    <a href="about.html">About Us</a>
+                    <a href="contact.html">Contact</a>
+                    <a href="careers.html">Careers</a>
+                </div>
+                <div class="footer-col">
+                    <h4>Legal</h4>
+                    <a href="privacy.html">Privacy Policy</a>
+                    <a href="terms.html">Terms of Use</a>
+                </div>
+            </div>
+            <div class="copyright">&copy; 2026 EVahan Technologies. All rights reserved.</div>
+        </div>
+    </footer>
+
+    <script>
+        const html = document.documentElement;
+        const themeBtn = document.querySelector('.theme-toggle');
+        let theme = localStorage.getItem('theme') || 'light';
+        html.setAttribute('data-theme', theme);
+        if (themeBtn) themeBtn.innerHTML = theme === 'dark' ? '<i class="fas fa-sun"></i>' : '<i class="fas fa-moon"></i>';
+
+        function toggleTheme() {
+            theme = theme === 'light' ? 'dark' : 'light';
+            html.setAttribute('data-theme', theme);
+            localStorage.setItem('theme', theme);
+            if (themeBtn) themeBtn.innerHTML = theme === 'dark' ? '<i class="fas fa-sun"></i>' : '<i class="fas fa-moon"></i>';
+        }
+    </script>
+</body>
+</html>
+

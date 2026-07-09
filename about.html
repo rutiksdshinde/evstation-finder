@@ -1,0 +1,486 @@
+
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+<title>About Us - EVahan | India's Intelligent EV Network</title>
+
+    <!-- Fonts & Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Chatbot CSS -->
+    <link rel="stylesheet" href="chatbot.css">
+
+    <style>
+        /* --- VARIABLES --- */
+        :root {
+            --primary: #2563eb;
+            --primary-dark: #1d4ed8;
+            --secondary: #0ea5e9;
+            --accent: #f59e0b;
+            --danger: #ef4444;
+            --success: #10b981;
+            --dark: #0f172a;
+            --light: #f8fafc;
+            --surface: #ffffff;
+            --border: #e2e8f0;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --gradient-hero: linear-gradient(135deg, #eff6ff 0%, #ffffff 100%);
+            --shadow-card: 0 10px 30px -5px rgba(0,0,0,0.05);
+            --radius: 24px;
+        }
+
+        [data-theme="dark"] {
+            --primary: #3b82f6;
+            --secondary: #38bdf8;
+            --dark: #f8fafc;
+            --light: #0f172a;
+            --surface: #1e293b;
+            --border: #334155;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --gradient-hero: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+        }
+
+        /* --- BASE --- */
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        html { scroll-behavior: smooth; }
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background: var(--light);
+            color: var(--text-main);
+            line-height: 1.7;
+            overflow-x: hidden;
+            transition: background 0.3s, color 0.3s;
+        }
+
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 2rem; }
+
+        .badge {
+            display: inline-block; padding: 0.5rem 1rem;
+            background: rgba(37, 99, 235, 0.1); color: var(--primary);
+            border-radius: 50px; font-weight: 700; font-size: 0.85rem;
+            text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 1rem;
+        }
+        .section-header { text-align: center; max-width: 760px; margin: 0 auto 4rem; }
+        .section-title { font-size: 2.5rem; font-weight: 800; margin-bottom: 1rem; }
+        .section-desc { color: var(--text-muted); font-size: 1.1rem; line-height: 1.6; }
+
+        /* --- BUTTONS --- */
+        .btn {
+            display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem;
+            padding: 0.85rem 2rem; border-radius: 50px;
+            font-weight: 600; text-decoration: none;
+            transition: all 0.3s ease; cursor: pointer; border: none;
+            font-size: 0.95rem; white-space: nowrap;
+        }
+        .btn-primary { background: var(--primary); color: white; box-shadow: 0 4px 14px rgba(37,99,235,0.3); }
+        .btn-primary:hover { background: var(--primary-dark); transform: translateY(-2px); box-shadow: 0 8px 20px rgba(37,99,235,0.4); }
+        .btn-outline { background: transparent; border: 2px solid var(--border); color: var(--text-main); }
+        .btn-outline:hover { border-color: var(--primary); color: var(--primary); }
+        .btn-secondary { background: var(--secondary); color: white; }
+        .btn-secondary:hover { background: #0284c7; transform: translateY(-2px); }
+
+        /* --- NAVBAR --- */
+        .navbar {
+            position: fixed; top: 0; width: 100%; z-index: 1000;
+            background: rgba(255,255,255,0.8); backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--border); padding: 1rem 0;
+            transition: all 0.3s;
+        }
+        [data-theme="dark"] .navbar { background: rgba(15, 23, 42, 0.9); }
+        .navbar.scrolled { box-shadow: 0 4px 20px rgba(0,0,0,0.1); }
+
+        .nav-content { display: flex; justify-content: space-between; align-items: center; }
+        .logo {
+            font-size: 1.5rem; font-weight: 800; color: var(--primary);
+            text-decoration: none; display: flex; align-items: center; gap: 8px;
+        }
+
+        .nav-links { display: flex; gap: 2rem; align-items: center; }
+        .nav-link { color: var(--text-main); text-decoration: none; font-weight: 600; transition: color 0.2s; }
+        .nav-link:hover, .nav-link.active { color: var(--primary); }
+
+        .nav-toggle {
+            display: none; background: none; border: none; font-size: 1.5rem;
+            color: var(--text-main); cursor: pointer;
+        }
+
+        /* --- HERO --- */
+        .hero {
+            padding: 160px 0 100px;
+            background: var(--gradient-hero);
+            position: relative; overflow: hidden;
+        }
+        .hero-grid { display: grid; grid-template-columns: 1fr; gap: 2rem; text-align: center; }
+        .hero h1 { font-size: clamp(2.5rem, 6vw, 4rem); line-height: 1.1; font-weight: 800; margin-bottom: 1.5rem; }
+        .hero h1 span {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+        }
+        .hero-lead { font-size: clamp(1rem, 2vw, 1.25rem); color: var(--text-muted); margin-bottom: 2.5rem; max-width: 80%; margin-left: auto; margin-right: auto; }
+
+        /* --- ABOUT SECTIONS --- */
+        .about-section { padding: 100px 0; background: var(--surface); }
+        .mission-section { background: var(--light); }
+        .story-section { background: var(--surface); }
+        .team-section { background: var(--light); }
+        .contact-section { background: var(--surface); }
+
+        .mission-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; align-items: center; }
+        .mission-content h2 { font-size: 2.5rem; font-weight: 800; margin-bottom: 1.5rem; }
+        .mission-content p { color: var(--text-muted); font-size: 1.1rem; margin-bottom: 2rem; line-height: 1.8; }
+
+        .story-content { max-width: 800px; margin: 0 auto; text-align: center; }
+        .story-content p { font-size: 1.1rem; line-height: 1.8; margin-bottom: 2rem; }
+
+        .team-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+        }
+        .team-card {
+            background: var(--surface); padding: 2rem; border-radius: 24px;
+            border: 1px solid var(--border); text-align: center;
+            transition: all 0.3s ease;
+        }
+        .team-card:hover {
+            transform: translateY(-10px);
+            box-shadow: var(--shadow-card);
+            border-color: var(--primary);
+        }
+        .team-avatar {
+            width: 80px; height: 80px; background: var(--primary); color: white;
+            border-radius: 50%; font-size: 2rem; display: flex;
+            align-items: center; justify-content: center; margin: 0 auto 1rem;
+        }
+        .team-name { font-size: 1.2rem; font-weight: 700; margin-bottom: 0.5rem; }
+        .team-role { color: var(--text-muted); margin-bottom: 1rem; }
+
+        .contact-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem; }
+        .contact-item {
+            text-align: center; padding: 2rem;
+            border: 1px solid var(--border); border-radius: 24px;
+            background: var(--light);
+        }
+        .contact-icon { font-size: 3rem; color: var(--primary); margin-bottom: 1rem; }
+
+        /* --- FOOTER --- */
+        footer { background: #0b1120; color: #94a3b8; padding: 80px 0 40px; }
+        .footer-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 3rem;
+            margin-bottom: 3rem;
+        }
+        .footer-brand h2 { color: white; margin-bottom: 1rem; }
+        .footer-col h4 { color: white; margin-bottom: 1.5rem; }
+        .footer-col a {
+            display: block; color: #94a3b8; text-decoration: none;
+            margin-bottom: 0.8rem; transition: color 0.2s;
+        }
+        .footer-col a:hover { color: white; }
+        .copyright { border-top: 1px solid #1e293b; padding-top: 2rem; text-align: center; }
+
+        /* --- ANIMATIONS --- */
+        .reveal { opacity: 0; transform: translateY(30px); transition: all 0.8s ease; }
+        .reveal.active { opacity: 1; transform: translateY(0); }
+
+        /* --- CHATBOT --- */
+        #chat-toggle-btn {
+            position: fixed; bottom: 30px; right: 30px;
+            width: 60px; height: 60px; border-radius: 50%;
+            background: var(--primary); color: white;
+            border: none; box-shadow: 0 10px 25px rgba(37,99,235,0.4);
+            cursor: pointer; z-index: 999;
+            font-size: 1.5rem; display: flex; align-items: center; justify-content: center;
+            transition: transform 0.3s;
+        }
+        #chat-toggle-btn:hover { transform: scale(1.1); }
+
+        /* --- RESPONSIVE --- */
+        @media (max-width: 768px) {
+            .nav-links {
+                position: fixed; top: 70px; left: 0; right: 0;
+                background: var(--surface); flex-direction: column;
+                padding: 2rem; gap: 1rem;
+                box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+                transform: translateY(-120%);
+                transition: transform 0.3s ease;
+            }
+            .nav-links.active { transform: translateY(0); }
+            .nav-toggle { display: block; }
+
+            .hero h1 { font-size: clamp(2rem, 8vw, 3rem); }
+            .hero-lead { font-size: clamp(0.9rem, 3vw, 1.1rem); }
+
+            .mission-grid { grid-template-columns: 1fr; gap: 3rem; }
+
+            .section-header { margin-bottom: 3rem; }
+            .section-title { font-size: 2rem; }
+            .section-desc { font-size: 1rem; }
+
+            .team-grid { grid-template-columns: 1fr; }
+            .contact-grid { grid-template-columns: 1fr; }
+
+            .footer-grid { grid-template-columns: 1fr; gap: 2rem; }
+
+            .container { padding: 0 1rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- LOADER -->
+    <div id="loader">
+        <div style="text-align:center">
+            <i class="fas fa-bolt fa-3x fa-spin" style="color:var(--primary); margin-bottom:1rem"></i>
+<h3>Loading EVahan...</h3>
+        </div>
+    </div>
+
+    <!-- NAVBAR -->
+    <nav class="navbar">
+        <div class="container nav-content">
+<a href="index.html" class="logo"><i class="fas fa-bolt"></i> EVahan</a>
+
+            <button class="nav-toggle" onclick="toggleNav()">
+                <i class="fas fa-bars"></i>
+            </button>
+            <div class="nav-links" id="navLinks">
+                <a href="index.html" class="nav-link">Home</a>
+
+                
+                <a href="ev_calculator.html" class="nav-link">Calculate Cost</a>
+                <a href="about.html" class="nav-link active">About Us</a>
+
+                <button id="theme-toggle" class="btn btn-outline" style="padding: 0.6rem 1rem;">
+                    <i class="fas fa-moon"></i>
+                </button>
+               
+                <a href="ev_search.html" class="btn btn-primary">Find Station</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- HERO SECTION -->
+    <section class="hero">
+        <div class="container">
+            <div class="hero-grid">
+                <div class="hero-text reveal">
+<div class="badge">About EVahan</div>
+                    <h1>Powering India's <span>Electric Future</span></h1>
+EVahan connects drivers with reliable, verified charging infrastructure across India.
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- OUR MISSION -->
+    <section class="about-section mission-section">
+        <div class="container">
+            <div class="mission-grid">
+                <div class="mission-content reveal">
+                    <div class="badge" style="background: rgba(14, 165, 233, 0.1); color: var(--secondary);">
+                        <i class="fas fa-bullseye"></i> Our Mission
+                    </div>
+                    <h2>Accelerating EV Adoption</h2>
+                    <p>We believe electric vehicles are the future of transportation. Our mission is to eliminate range anxiety by providing the most comprehensive, accurate, and user-friendly EV charging platform in India.</p>
+                    <p>Through innovative technology and partnerships with leading charging networks, we're building the infrastructure that will power millions of EVs across the country.</p>
+                </div>
+                <div class="reveal">
+                    <img src="image/EV.jpg" alt="EV Charging Network" style="width: 100%; border-radius: 24px; box-shadow: 0 20px 40px rgba(0,0,0,0.15);">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- OUR STORY -->
+    <section class="about-section story-section">
+        <div class="container">
+            <div class="section-header reveal">
+                <div class="badge">Our Journey</div>
+                <h2 class="section-title">From Vision to Reality</h2>
+How EVahan came to be and where we're heading.
+            </div>
+            <div class="story-content reveal">
+EVahan was born from a simple frustration:
+                <p>Today, we serve over 50,000 EV drivers monthly, with partnerships spanning 15+ charging networks and coverage across 4500+ cities. Our platform has helped prevent countless instances of range anxiety and made long-distance EV travel a reality for Indian drivers.</p>
+                <p>As India pushes towards its ambitious EV goals, EVahan is committed to being at the forefront of this transformation, ensuring every driver has access to the charging infrastructure they need.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- OUR TEAM -->
+    <section class="about-section team-section">
+        <div class="container">
+            <div class="section-header reveal">
+                <div class="badge">Meet the Team</div>
+The People Behind EVahan
+                <p class="section-desc">Passionate experts driving innovation in EV infrastructure.</p>
+            </div>
+            <div class="team-grid">
+                <div class="team-card reveal">
+                    <div class="team-avatar"><i class="fas fa-user-tie"></i></div>
+                    <h3 class="team-name">Rutik Shinde</h3>
+                    <p class="team-role">9226774305</p>
+                </div>
+                <div class="team-card reveal">
+                    <div class="team-avatar"><i class="fas fa-code"></i></div>
+                    <h3 class="team-name">Rutik Shinde</h3>
+                    <p class="team-role">9226774305</p>
+                </div>
+                <div class="team-card reveal">
+                    <div class="team-avatar"><i class="fas fa-map-marked-alt"></i></div>
+                    <h3 class="team-name">Rutik Shinde</h3>
+                    <p class="team-role">9226774305</p>
+                </div>
+                <div class="team-card reveal">
+                    <div class="team-avatar"><i class="fas fa-cogs"></i></div>
+                    <h3 class="team-name">Rutik Shinde</h3>
+                    <p class="team-role">9226774305</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CONTACT -->
+    <section class="about-section contact-section">
+        <div class="container">
+            <div class="section-header reveal">
+                <div class="badge">Get in Touch</div>
+                <h2 class="section-title">Contact Us</h2>
+                <p class="section-desc">Have questions or feedback? We'd love to hear from you.</p>
+            </div>
+            <div class="contact-grid">
+                <div class="contact-item reveal">
+                    <i class="fas fa-envelope contact-icon"></i>
+                    <h3>Email Us</h3>
+support@evahan.in
+                    <p style="color: var(--text-muted); font-size: 0.9rem;">We respond within 24 hours</p>
+                </div>
+                <div class="contact-item reveal">
+                    <i class="fas fa-phone contact-icon"></i>
+                    <h3>Call Us</h3>
+                    <p style="color: var(--text-muted);">+91 9226774305</p>
+                    <p style="color: var(--text-muted); font-size: 0.9rem;">Mon-Fri, 9AM-6PM IST</p>
+                </div>
+                <div class="contact-item reveal">
+                    <i class="fas fa-map-marker-alt contact-icon"></i>
+                    <h3>Visit Us</h3>
+                    <p style="color: var(--text-muted);">Mumbai </p>
+                    <p style="color: var(--text-muted); font-size: 0.9rem;">India's EV Innovation Hub</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer>
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-brand">
+<h2><i class="fas fa-bolt"></i> EVahan</h2>
+                    <p>Building India's electric future with smart infrastructure and verified data.</p>
+                </div>
+                <div class="footer-col">
+                    <h4>Platform</h4>
+                    <a href="ev_search.html">Find Stations</a>
+                    <a href="app_benefits.html">Route Planner</a>
+                    <a href="app_benefits.html">Traffic Monitor</a>
+                </div>
+                <div class="footer-col">
+                    <h4>Company</h4>
+                    <a href="about.html">About Us</a>
+                    <a href="#">Feedback</a>
+                    <a href="contact.html">Contact</a>
+                    <a href="careers.html">Careers</a>
+                </div>
+                <div class="footer-col">
+                    <h4>Legal</h4>
+                    <a href="privacy.html">Privacy Policy</a>
+                    <a href="terms.html">Terms of Use</a>
+                </div>
+            </div>
+            <div class="copyright">
+&copy; 2025 EVahan Technologies. All rights reserved.
+            </div>
+        </div>
+    </footer>
+
+    <!-- CHATBOT BUTTON -->
+    <button id="chat-toggle-btn" onclick="toggleChat()">
+        <i class="fas fa-comment-dots"></i>
+    </button>
+
+    <!-- CHAT WINDOW -->
+    <div id="chat-window" class="chat-hidden">
+        <div class="chat-header">
+            <span><i class="fas fa-robot"></i> EV Assistant</span>
+            <button onclick="toggleChat()" class="close-chat">×</button>
+        </div>
+        <div id="chat-messages">
+            <div class="message bot-message">Hi! Ask me about charging stations, route planning, or EV tech.</div>
+        </div>
+        <div class="chat-input-area">
+            <input type="text" id="user-input" placeholder="Type your question..." onkeypress="handleEnter(event)">
+            <button onclick="sendMessage()"><i class="fas fa-paper-plane"></i></button>
+        </div>
+    </div>
+
+    <!-- SCRIPTS -->
+    <script src="config.js"></script>
+    <script src="chatbot.js"></script>
+    <script>
+        // Loader
+        window.addEventListener('load', () => {
+            const loader = document.getElementById('loader');
+            loader.style.opacity = '0';
+            setTimeout(() => { loader.style.display = 'none'; }, 500);
+        });
+
+        // Mobile Nav Toggle
+        function toggleNav() {
+            document.getElementById('navLinks').classList.toggle('active');
+        }
+
+        // Theme Toggle
+        const themeBtn = document.getElementById('theme-toggle');
+        const html = document.documentElement;
+        let theme = localStorage.getItem('theme') || 'light';
+        html.setAttribute('data-theme', theme);
+        themeBtn.innerHTML = theme === 'dark' ? '<i class="fas fa-sun"></i>' : '<i class="fas fa-moon"></i>';
+
+        themeBtn.addEventListener('click', () => {
+            theme = theme === 'light' ? 'dark' : 'light';
+            html.setAttribute('data-theme', theme);
+            localStorage.setItem('theme', theme);
+            themeBtn.innerHTML = theme === 'dark' ? '<i class="fas fa-sun"></i>' : '<i class="fas fa-moon"></i>';
+        });
+
+        // Cross-tab theme sync
+        window.addEventListener('storage', (e) => {
+            if (e.key === 'theme') {
+                const newTheme = e.newValue || 'light';
+                html.setAttribute('data-theme', newTheme);
+                themeBtn.innerHTML = newTheme === 'dark' ? '<i class="fas fa-sun"></i>' : '<i class="fas fa-moon"></i>';
+            }
+        });
+
+        // Navbar Scroll
+        window.addEventListener('scroll', () => {
+            const nav = document.querySelector('.navbar');
+            if(window.scrollY > 50) nav.classList.add('scrolled');
+            else nav.classList.remove('scrolled');
+        });
+
+        // Scroll Reveal
+        const revealObserver = new IntersectionObserver((entries) => {
+            entries.forEach(e => { if(e.isIntersecting) e.target.classList.add('active'); });
+        }, {threshold: 0.1});
+        document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
+    </script>
+</body>
+</html>
