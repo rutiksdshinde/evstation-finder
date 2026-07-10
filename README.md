@@ -5,7 +5,7 @@ EVahan is a front-end web application that helps users **find EV charging statio
 Live portfolio: https://evahancharge.wasmer.app
 
 ## Links
-- **Portfolio:** https://prismatic-alpaca-376b6f.netlify.app
+- **Portfolio:** https://rutikshinde.netlify.app/
 - **LinkedIn:** https://www.linkedin.com/in/rutik-shinde-09a438237/
 - **GitHub:** https://github.com/rutiksdshinde
 
